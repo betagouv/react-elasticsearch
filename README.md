@@ -10,17 +10,10 @@ npm i react-elasticsearch
 
 ## Develop
 
-Build the lib
+You can test components with storybook.
 
 ```
-npm build
-```
-
-Open another tab and run the example to try the component in browser
-
-```
-cd example
-npm start
+npm run storybook
 ```
 
 ## Build & publish
