@@ -9,14 +9,20 @@ export default function({ fields, id }) {
   const [size, setSize] = useState(5);
   const [selectedInputs, setSelectedInputs] = useState([]);
 
+  // This effect reloads data on `filterValue`, `size` or `queries` change.
   useEffect(() => {
+    // Get all data (aggs) for the facet list
     async function fetchData() {
+      // Get the aggs (elasticsearch queries) from fields
+      // Dirtiest part, because we build a raw query from various params
       function aggsFromFields() {
+        // Remove current query from queries list (do not react to self)
         function withoutOwnQueries() {
           const q = new Map(queries);
           q.delete(id);
           return q;
         }
+        // Transform a single field to agg query
         function aggFromField(field) {
           const t = { field, order: { _count: "desc" }, size };
           if (filterValue) {
@@ -24,12 +30,14 @@ export default function({ fields, id }) {
           }
           return { [field]: { terms: t } };
         }
+        // Actually build the query from fields
         let result = {};
         fields.forEach(f => {
           result = { ...result, ...aggFromField(f) };
         });
         return { query: queryFrom(withoutOwnQueries()), size: 0, aggs: result };
       }
+      // Use previous function to perform query to elasticsearch endpoint
       const result = await msearch(url, aggsFromFields());
       setData(result.responses[0].aggregations[fields[0]].buckets);
     }
@@ -52,10 +60,12 @@ export default function({ fields, id }) {
             type="checkbox"
             checked={selectedInputs.includes(item.key)}
             onChange={e => {
+              // On checkbox status change, add or remove current agg to selected
               const newSelectedInputs = e.target.checked
                 ? [...new Set([...selectedInputs, item.key])]
-                : selectedInputs.filter(f => f.key === item.key);
+                : selectedInputs.filter(f => f !== item.key);
               setSelectedInputs(newSelectedInputs);
+              // Update external queries.
               dispatch({
                 type: "updateQueries",
                 key: id,
@@ -69,7 +79,6 @@ export default function({ fields, id }) {
         </label>
       ))}
       {data.length === size ? <button onClick={() => setSize(size + 5)}>Voir plus</button> : null}
-      <div>Internal query: {JSON.stringify(queries.get(id))}</div>
     </div>
   );
 }

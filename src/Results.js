@@ -3,16 +3,17 @@ import { msearch, queryFrom } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 import Pagination from "./Pagination";
 
+// Pagination, informations about results (like "30 results") 
+// and size (number items per page) are customizable.
 export default function({ size, pagination, resultsInfo }) {
   const [{ queries, url }] = useSharedContext();
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const query = queryFrom(queries);
-
   size = size || 10;
-  pagination = pagination;
 
+  // This effect reloads results data on every `query` (full query) or `page` change.
   useEffect(() => {
     async function fetchData() {
       const result = await msearch(url, { query, size, from: (page - 1) * size });

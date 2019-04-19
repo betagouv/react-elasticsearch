@@ -1,13 +1,11 @@
 import fetch from "unfetch";
 
+// Search with msearch to elasticsearch instance
 export function msearch(url, query) {
   return new Promise(async (resolve, reject) => {
     const rawResponse = await fetch(`${url}/_msearch`, {
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-ndjson"
-      },
+      headers: { Accept: "application/json", "Content-Type": "application/x-ndjson" },
       body: `{}\n${JSON.stringify(query)}\n`
     });
     const response = await rawResponse.json();
@@ -15,15 +13,12 @@ export function msearch(url, query) {
   });
 }
 
+// Build a query from a Map of queries
 export function queryFrom(queries) {
-  return {
-    bool: {
-      must:
-        queries.size === 0 ? { match_all: {} } : Array.from(queries.values())
-    }
-  };
+  return { bool: { must: queries.size === 0 ? { match_all: {} } : Array.from(queries.values()) } };
 }
 
+// Convert fields to term queries
 export function toTermQueries(fields, selectedValues) {
   const queries = [];
   for (let i in fields) {
