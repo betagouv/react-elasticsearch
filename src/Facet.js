@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { msearch, toTermQueries, queryFrom } from "./utils";
-import { getStateContext } from "./StateContextProvider";
+import { useSharedContext } from "./SharedContextProvider";
 
 export default function({ fields, id }) {
-  const [{ queries, url }, dispatch] = getStateContext();
+  const [{ queries, url }, dispatch] = useSharedContext();
   const [data, setData] = useState([]);
   const [filterValue, setFilterValue] = useState("");
   const [size, setSize] = useState(5);
   const [selectedInputs, setSelectedInputs] = useState([]);
+
   useEffect(() => {
     async function fetchData() {
       function aggsFromFields() {
@@ -27,11 +28,7 @@ export default function({ fields, id }) {
         fields.forEach(f => {
           result = { ...result, ...aggFromField(f) };
         });
-        return {
-          query: queryFrom(withoutOwnQueries()),
-          size: 0,
-          aggs: result
-        };
+        return { query: queryFrom(withoutOwnQueries()), size: 0, aggs: result };
       }
       const result = await msearch(url, aggsFromFields());
       setData(result.responses[0].aggregations[fields[0]].buckets);
@@ -40,8 +37,7 @@ export default function({ fields, id }) {
   }, [filterValue, size, JSON.stringify(queryFrom(queries))]);
 
   return (
-    <div style={{ border: "orange 2px solid", margin: "10px" }}>
-      <h5>Facette</h5>
+    <div className="react-elasticsearch-facet">
       <input
         value={filterValue}
         placeholder="Filter facet"
@@ -72,9 +68,7 @@ export default function({ fields, id }) {
           {item.key} ({item.doc_count})
         </label>
       ))}
-      {data.length === size ? (
-        <button onClick={() => setSize(size + 5)}>Voir plus</button>
-      ) : null}
+      {data.length === size ? <button onClick={() => setSize(size + 5)}>Voir plus</button> : null}
       <div>Internal query: {JSON.stringify(queries.get(id))}</div>
     </div>
   );

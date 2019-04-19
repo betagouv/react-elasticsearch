@@ -1,18 +1,17 @@
 import React, { createContext, useContext, useReducer } from "react";
 import PropTypes from "prop-types";
 
-export const StateContext = createContext();
+export const SharedContext = createContext();
 
-export const StateContextProvider = ({ reducer, initialState, children }) => {
-  console.log("StateContextProvider updated")
+export const SharedContextProvider = ({ reducer, initialState, children }) => {
   return (
-    <StateContext.Provider value={useReducer(reducer, initialState)}>
+    <SharedContext.Provider value={useReducer(reducer, initialState)}>
       {children}
-    </StateContext.Provider>
+    </SharedContext.Provider>
   );
 };
 
-StateContextProvider.propTypes = {
+SharedContextProvider.propTypes = {
   /**
    * @return {React.Node}
    */
@@ -31,4 +30,4 @@ StateContextProvider.propTypes = {
   reducer: PropTypes.func.isRequired
 };
 
-export const getStateContext = () => useContext(StateContext);
+export const useSharedContext = () => useContext(SharedContext);

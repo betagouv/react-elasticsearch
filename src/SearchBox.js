@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { getStateContext } from "./StateContextProvider";
+import { useSharedContext } from "./SharedContextProvider";
 
-export default function({ customQuery, id }) {
-  const [{ queries }, dispatch] = getStateContext();
+export default function({ customQuery, id, debug }) {
+  const [{ queries }, dispatch] = useSharedContext();
   const [value, setValue] = useState();
+  debug && console.log(`SearchBox internal query: ${JSON.stringify(queries.get(id))}`);
+
   return (
-    <div style={{ border: "blue 2px solid", margin: "10px" }}>
-      <h5>Componsant recherche</h5>
+    <div className="react-elasticsearch-searchbox">
       <input
         type="text"
         value={value}
@@ -15,11 +16,10 @@ export default function({ customQuery, id }) {
           dispatch({
             type: "updateQueries",
             key: id,
-            value: customQuery(e.target.value),
+            value: customQuery(e.target.value)
           });
         }}
       />
-      <div>Internal query: {JSON.stringify(queries.get(id))}</div>
     </div>
   );
 }

@@ -12,7 +12,7 @@ export default function({onChange, total, itemsPerPage, currentPage}) {
     arr = [1, max -4, max -3, max - 2,  max - 1  ,max]
   }
   arr.filter(e => e <= max)
-  return <ul>
+  return <ul className="react-elasticsearch-pagination">
     {arr.map(i => {
       return <li key={i}><button onClick={() => onChange(i)}>{i}</button></li>
     })}

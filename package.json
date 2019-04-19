@@ -11,6 +11,9 @@
   "keywords": [],
   "author": "rap2hpoutre",
   "license": "MIT",
+  "prettier": {
+    "printWidth": 100
+  },
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",

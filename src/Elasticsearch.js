@@ -1,5 +1,5 @@
 import React from "react";
-import { StateContextProvider } from "./StateContextProvider";
+import { SharedContextProvider } from "./SharedContextProvider";
 
 export default function({ children, url }) {
   const initialState = { queries: new Map(), url };
@@ -16,8 +16,8 @@ export default function({ children, url }) {
   };
 
   return (
-    <StateContextProvider initialState={initialState} reducer={reducer}>
+    <SharedContextProvider initialState={initialState} reducer={reducer}>
       {children}
-    </StateContextProvider>
+    </SharedContextProvider>
   );
 }
