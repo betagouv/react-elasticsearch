@@ -1,10 +1,8 @@
 import React from "react";
 import { StateContextProvider } from "./StateContextProvider";
 
-export default function(props) {
-  const initialState = {
-    queries: new Map()
-  };
+export default function({ children, url }) {
+  const initialState = { queries: new Map(), url };
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -19,8 +17,7 @@ export default function(props) {
 
   return (
     <StateContextProvider initialState={initialState} reducer={reducer}>
-      <h4>COmposant principal</h4>
-      <div style={{ border: "red 2px solid" }}>{props.children}</div>
+      {children}
     </StateContextProvider>
   );
 }

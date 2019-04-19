@@ -1,10 +1,8 @@
 import fetch from "unfetch";
 
-const ESURL = "FIXME";
-
-export function msearch(query) {
+export function msearch(url, query) {
   return new Promise(async (resolve, reject) => {
-    const rawResponse = await fetch(`${ESURL}/_msearch`, {
+    const rawResponse = await fetch(`${url}/_msearch`, {
       method: "POST",
       headers: {
         Accept: "application/json",

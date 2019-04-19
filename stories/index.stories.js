@@ -2,32 +2,42 @@ import React from "react";
 
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import { linkTo } from "@storybook/addon-links";
 
-import { Button, Welcome } from "@storybook/react/demo";
-import { Pagination } from "../src"
+import { Pagination, Elasticsearch, SearchBox, Facet, Results } from "../src";
 
-storiesOf("Welcome", module).add("to Storybook", () => (
-  <Welcome showApp={linkTo("Button")} />
-));
+storiesOf("Pagination", module).add("normal", () => {
+  return (
+    <Pagination
+      onChange={action("page changed")}
+      total={200}
+      itemsPerPage={5}
+      currentPage={1}
+    />
+  );
+});
 
-storiesOf("Button", module)
-  .add("with text", () => (
-    <Button onClick={action("clicked")}>Hello Button</Button>
-  ))
-  .add("with some emoji", () => (
-    <Button onClick={action("clicked")}>
-      <span role="img" aria-label="so cool">
-        😀 😎 👍 💯
-      </span>
-    </Button>
-  ));
+function customQuery(value) {
+  if (!value) {
+    return { match_all: {} };
+  }
+  return { multi_match: { query: value, type: "phrase", fields: ["TICO"] } };
+}
 
-storiesOf("Pagination", module).add("simple pagination", () => (
-  <Pagination
-    onChange={action("on Change")}
-    total={200}
-    itemsPerPage={5}
-    currentPage={1}
-  />
-));
+storiesOf("Elasticsearch", module).add("full", () => {
+  return (
+    <Elasticsearch url="http://pop-api-staging.eu-west-3.elasticbeanstalk.com/search/merimee">
+      <SearchBox id="main" customQuery={customQuery} />
+      <table>
+        <tr>
+          <td>
+            <Facet id="author" fields={["AUTR.keyword"]} />
+          </td>
+          <td>
+            <Facet id="domn" fields={["DOMN.keyword"]} />
+          </td>
+        </tr>
+      </table>
+      <Results />
+    </Elasticsearch>
+  );
+});

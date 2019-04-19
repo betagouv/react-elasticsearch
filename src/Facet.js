@@ -3,7 +3,7 @@ import { msearch, toTermQueries, queryFrom } from "./utils";
 import { getStateContext } from "./StateContextProvider";
 
 export default function({ fields, id }) {
-  const [{ queries }, dispatch] = getStateContext();
+  const [{ queries, url }, dispatch] = getStateContext();
   const [data, setData] = useState([]);
   const [filterValue, setFilterValue] = useState("");
   const [size, setSize] = useState(5);
@@ -33,7 +33,7 @@ export default function({ fields, id }) {
           aggs: result
         };
       }
-      const result = await msearch(aggsFromFields());
+      const result = await msearch(url, aggsFromFields());
       setData(result.responses[0].aggregations[fields[0]].buckets);
     }
     fetchData();

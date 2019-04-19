@@ -4,7 +4,7 @@ import { getStateContext } from "./StateContextProvider";
 import Pagination from "./Pagination";
 
 export default function({ size }) {
-  const [{ queries }] = getStateContext();
+  const [{ queries, url }] = getStateContext();
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -14,7 +14,7 @@ export default function({ size }) {
 
   useEffect(() => {
     async function fetchData() {
-      const result = await msearch({ query, size, from: (page - 1) * size });
+      const result = await msearch(url, { query, size, from: (page - 1) * size });
       setData(result.responses[0].hits.hits);
       setTotal(result.responses[0].hits.total);
     }
