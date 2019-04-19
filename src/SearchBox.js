@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSharedContext } from "./SharedContextProvider";
 
 export default function({ customQuery, id }) {
-  const [dispatch] = useSharedContext();
+  const [{}, dispatch] = useSharedContext();
   const [value, setValue] = useState();
 
   return (
