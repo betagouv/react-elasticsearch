@@ -10,10 +10,10 @@ npm i react-elasticsearch
 
 ## Develop
 
-Run the watcher on root folder:
+Build the lib
 
 ```
-npm start
+npm build
 ```
 
 Open another tab and run the example to try the component in browser

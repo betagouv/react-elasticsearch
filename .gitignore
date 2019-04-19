@@ -3,7 +3,7 @@
 /example/node_modules
 
 # production
-/dist/main.js
+dist/main.js
 /example/build
 
 # misc
