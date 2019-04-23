@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer } from "react";
 import PropTypes from "prop-types";
 
+// Todo: add comments. Component purpose!
 export const SharedContext = createContext();
 
 export const SharedContextProvider = ({ reducer, initialState, children }) => {

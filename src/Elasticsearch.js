@@ -1,6 +1,7 @@
 import React from "react";
 import { SharedContextProvider } from "./SharedContextProvider";
 
+// Main component. See storybook for usage.
 export default function({ children, url }) {
   const initialState = { queries: new Map(), url };
 

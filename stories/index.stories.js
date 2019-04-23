@@ -5,16 +5,7 @@ import { action } from "@storybook/addon-actions";
 
 import { Pagination, Elasticsearch, SearchBox, Facet, Results } from "../src";
 
-storiesOf("Pagination", module).add("normal", () => {
-  return (
-    <Pagination
-      onChange={action("page changed")}
-      total={200}
-      itemsPerPage={5}
-      currentPage={1}
-    />
-  );
-});
+const url = "http://pop-api-staging.eu-west-3.elasticbeanstalk.com/search/merimee";
 
 function customQuery(value) {
   if (!value) {
@@ -25,19 +16,88 @@ function customQuery(value) {
 
 storiesOf("Elasticsearch", module).add("full", () => {
   return (
-    <Elasticsearch url="http://pop-api-staging.eu-west-3.elasticbeanstalk.com/search/merimee">
+    <Elasticsearch url={url}>
       <SearchBox id="main" customQuery={customQuery} />
-      <table>
-        <tr>
-          <td>
-            <Facet id="author" fields={["AUTR.keyword"]} />
-          </td>
-          <td>
-            <Facet id="domn" fields={["DOMN.keyword"]} />
-          </td>
-        </tr>
-      </table>
-      <Results />
+      <div style={{ display: "inline-block" }}>
+        <Facet id="author" fields={["AUTR.keyword"]} />
+      </div>
+      <div style={{ display: "inline-block" }}>
+        <Facet id="domn" fields={["DOMN.keyword"]} />
+      </div>
+      <Results
+        item={(source, score) => (
+          <div>
+            <b>{source.TICO}</b> - score: {score}
+          </div>
+        )}
+      />
     </Elasticsearch>
+  );
+});
+
+storiesOf("SearchBox", module)
+  .add("with default query", () => {
+    return (
+      <Elasticsearch url={url}>
+        <h1>Search on AUTR field</h1>
+        <pre>{`<SearchBox id="main" fields={["AUTR"]} />`}</pre>
+        <SearchBox id="main" fields={["AUTR"]} />
+        <Results item={source => <div>{source.TICO}</div>} pagination={() => <></>} />
+      </Elasticsearch>
+    );
+  })
+  .add("with custom query", () => {
+    return (
+      <Elasticsearch url={url}>
+        <h1>Search on TICO field with custom query</h1>
+        <pre>{`<SearchBox id="main" customQuery={customQuery} />`}</pre>
+        <SearchBox id="main" customQuery={customQuery} />
+        <Results item={source => <div>{source.TICO}</div>} pagination={() => <></>} />
+      </Elasticsearch>
+    );
+  });
+
+storiesOf("Results", module)
+  .add("vanilla", () => {
+    return (
+      <Elasticsearch url={url}>
+        <Results
+          item={(source, score, id) => (
+            <div>
+              <b>{source.TICO}</b> - score: {score} - id: {id}
+            </div>
+          )}
+        />
+      </Elasticsearch>
+    );
+  })
+  .add("with custom pagination", () => {
+    return (
+      <Elasticsearch url={url}>
+        <Results
+          item={source => <div>{source.TICO}</div>}
+          pagination={(total, size, page) => (
+            <div style={{ color: "green" }}>
+              Total : {total} - Size : {size} - Page: {page} CUSTOM!
+            </div>
+          )}
+        />
+      </Elasticsearch>
+    );
+  })
+  .add("with custom stats", () => {
+    return (
+      <Elasticsearch url={url}>
+        <Results
+          item={source => <div>{source.TICO}</div>}
+          stats={total => <div style={{ color: "green" }}>{total} results CUSTOM!</div>}
+        />
+      </Elasticsearch>
+    );
+  });
+
+storiesOf("Pagination", module).add("normal", () => {
+  return (
+    <Pagination onChange={action("page changed")} total={200} itemsPerPage={5} currentPage={1} />
   );
 });

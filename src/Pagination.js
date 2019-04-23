@@ -4,7 +4,7 @@ export default function({ onChange, total, itemsPerPage, currentPage }) {
   let arr = [];
   const max = Math.min(Math.floor(total / itemsPerPage), 10000 / itemsPerPage);
 
-  // Stupid, ugly and buggy algo. It needs to be improved.
+  // Stupid, ugly and buggy algo. It needs to be improved. Todo: fixit!
   //
   // The main objective is to have this display:
   //
