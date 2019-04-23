@@ -15,7 +15,7 @@ export default function({ customQuery, fields, id }) {
   }
 
   return (
-    <div className="react-elasticsearch-searchbox">
+    <div className="react-es-searchbox">
       <input
         type="text"
         value={value}

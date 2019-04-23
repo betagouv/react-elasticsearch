@@ -45,7 +45,7 @@ export default function({ fields, id }) {
   }, [filterValue, size, JSON.stringify(queryFrom(queries))]);
 
   return (
-    <div className="react-elasticsearch-facet">
+    <div className="react-es-facet">
       <input
         value={filterValue}
         placeholder="Filter facet"

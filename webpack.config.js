@@ -26,11 +26,6 @@ module.exports = {
     // https://webpack.js.org/configuration/output/#output-librarytarget
     libraryTarget: "umd",
     globalObject: "typeof self !== 'undefined' ? self : this"
-    /*
-    
-    library: 'react-elasticsearch-poc',
-    libraryTarget: 'umd'
-    */
   },
 
   externals: [

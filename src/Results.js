@@ -24,11 +24,11 @@ export default function({ size, pagination, stats, item }) {
   }, [JSON.stringify(query), page]);
 
   const defaultPagination = () => (
-    <Pagination onChange={p => setPage(p)} total={total} itemsPerPage={size} currentPage={page} />
+    <Pagination onChange={p => setPage(p)} total={total} itemsPerPage={size} page={page} />
   );
 
   return (
-    <div className="react-elasticsearch-results">
+    <div className="react-es-results">
       {stats ? stats(total) : <>{total} results</>}
       {data.map(r => item(r._source, r._score, r._id))}
       {pagination ? pagination(total, size, page) : defaultPagination()}
