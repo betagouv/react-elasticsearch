@@ -15,9 +15,7 @@ function WithUrlParams() {
   return (
     <Elasticsearch
       url={url}
-      onChange={params => {
-        setQueryString(toUrlQueryString(params));
-      }}
+      onChange={params => { setQueryString(toUrlQueryString(params))}}
       defaultParams={fromUrlQueryString("main=%22bourg%22")}
     >
       <div>Params: {queryString}</div>
