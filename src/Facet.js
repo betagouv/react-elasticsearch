@@ -67,11 +67,12 @@ export default function({ fields, id }) {
               setSelectedInputs(newSelectedInputs);
               // Update external queries.
               dispatch({
-                type: "updateQueries",
+                type: "update",
                 key: id,
-                value: {
+                query: {
                   bool: { should: toTermQueries(fields, newSelectedInputs) }
-                }
+                },
+                values: selectedInputs
               });
             }}
           />

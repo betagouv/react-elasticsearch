@@ -1,4 +1,5 @@
 import fetch from "unfetch";
+import qs from "qs";
 
 // Search with msearch to elasticsearch instance
 export function msearch(url, query) {
@@ -27,4 +28,14 @@ export function toTermQueries(fields, selectedValues) {
     }
   }
   return queries;
+}
+
+export function fromUrlQueryString(str) {
+  return new Map([...Object.entries(qs.parse(str.replace(/^\?/, ""))).map(([k, v]) => [k, JSON.parse(v)])])
+}
+
+export function toUrlQueryString(params) {
+  return qs.stringify(
+    Object.fromEntries(new Map(Array.from(params).map(([k, v]) => [k, JSON.stringify(v)])))
+  );
 }

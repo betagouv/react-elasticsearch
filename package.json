@@ -18,14 +18,15 @@
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.5",
-    "unfetch": "^4.1.0",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.0",
-    "@storybook/react": "^5.0.10",
     "@storybook/addon-actions": "^5.0.10",
     "@storybook/addon-links": "^5.0.10",
-    "@storybook/addons": "^5.0.10"
+    "@storybook/addons": "^5.0.10",
+    "@storybook/react": "^5.0.10",
+    "babel-loader": "^8.0.5",
+    "qs": "^6.7.0",
+    "unfetch": "^4.1.0",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.0"
   },
   "peerDependencies": {
     "react": "^16.8.6",
