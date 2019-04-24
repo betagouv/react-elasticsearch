@@ -4,11 +4,12 @@ import Listener from "./Listener";
 
 // Main component. See storybook for usage.
 export default function({ children, url, onChange, defaultParams }) {
+  console.log(defaultParams, new Map([["main", {value: "bourg"}]]))
   const initialState = {
-    reactives: new Map(),
+    reactives: defaultParams || new Map(),
     result: null,
     page: 1,
-    defaultParams: defaultParams || new Map(),
+    // defaultParams: defaultParams || new Map(),
     url
   };
 

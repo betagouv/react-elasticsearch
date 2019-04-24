@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useSharedContext } from "./SharedContextProvider";
 
 export default function({ customQuery, fields, id }) {
-  const [{ defaultParams }, dispatch] = useSharedContext();
-  const defaultValue = defaultParams.get(id) || "";
+  const [{ reactives }, dispatch] = useSharedContext();
+  const current = reactives.get(id);
+  const defaultValue = current ? current.value : "";
   const [value, setValue] = useState(defaultValue);
 
   useEffect(() => {
-    update(defaultValue);
+    if (defaultValue) {
+      update(defaultValue);
+    }
   }, [defaultValue]);
 
   function queryFromValue(query) {

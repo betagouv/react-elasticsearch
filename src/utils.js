@@ -31,7 +31,12 @@ export function toTermQueries(fields, selectedValues) {
 }
 
 export function fromUrlQueryString(str) {
-  return new Map([...Object.entries(qs.parse(str.replace(/^\?/, ""))).map(([k, v]) => [k, JSON.parse(v)])])
+  return new Map([
+    ...Object.entries(qs.parse(str.replace(/^\?/, ""))).map(([k, v]) => [
+      k,
+      { value: JSON.parse(v) }
+    ])
+  ]);
 }
 
 export function toUrlQueryString(params) {

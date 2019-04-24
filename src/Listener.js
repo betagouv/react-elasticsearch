@@ -4,6 +4,7 @@ import { useSharedContext } from "./SharedContextProvider";
 
 export default function({ onChange, children }) {
   const [{ reactives, url, size, page }, dispatch] = useSharedContext();
+  console.log(`DANS LE LISTENENR ${JSON.stringify(Array.from(reactives, ([k, v]) => [k, v.value]))}`)
 
   useEffect(() => {
     onChange && onChange(new Map(Array.from(reactives, ([k, v]) => [k, v.value])));
