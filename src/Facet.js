@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { msearch, toTermQueries, queryFrom } from "./utils";
+import { msearch, toTermQueries, queryFrom, toString } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
 export default function({ fields, id }) {
@@ -7,19 +7,34 @@ export default function({ fields, id }) {
   const [data, setData] = useState([]);
   const [filterValue, setFilterValue] = useState("");
   const [size, setSize] = useState(5);
-  const [selectedInputs, setSelectedInputs] = useState([]);
+  const current = reactives.get(id);
+  const defaultValue = current ? current.value : [];
+  const [selectedInputs, setSelectedInputs] = useState(defaultValue);
+
+  // Init values with default
+  useEffect(() => {
+    if (defaultValue && defaultValue.length) {
+      // Update external queries.
+      dispatch({
+        type: "update",
+        key: id,
+        value: selectedInputs,
+        query: v => ({ bool: { should: toTermQueries(fields, v) } })
+      });
+    }
+  }, [defaultValue]);
 
   // This effect reloads data on `filterValue`, `size` or `queries` change.
   useEffect(() => {
+    // Remove current query from queries list (do not react to self)
+    function withoutOwnQueries() {
+      return new Map(Array.from(reactives).filter(([k, _v]) => k !== id));
+    }
     // Get all data (aggs) for the facet list
     async function fetchData() {
       // Get the aggs (elasticsearch queries) from fields
       // Dirtiest part, because we build a raw query from various params
       function aggsFromFields() {
-        // Remove current query from queries list (do not react to self)
-        function withoutOwnQueries() {
-          return new Map(Array.from(reactives).filter(([k, _v]) => k !== id));
-        }
         // Transform a single field to agg query
         function aggFromField(field) {
           const t = { field, order: { _count: "desc" }, size };
@@ -39,12 +54,17 @@ export default function({ fields, id }) {
           aggs: result
         };
       }
+      for (let q of withoutOwnQueries().values()) {
+        if (!q.query) {
+          return;
+        }
+      }
       // Use previous function to perform query to elasticsearch endpoint
       const result = await msearch(url, aggsFromFields());
       setData(result.responses[0].aggregations[fields[0]].buckets);
     }
     fetchData();
-  }, [filterValue, size, JSON.stringify(Object.fromEntries(reactives))]);
+  }, [filterValue, size, toString(reactives)]);
 
   return (
     <div className="react-es-facet">

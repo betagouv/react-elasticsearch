@@ -15,12 +15,34 @@ function WithUrlParams() {
   return (
     <Elasticsearch
       url={url}
-      onChange={params => { setQueryString(toUrlQueryString(params))}}
-      defaultParams={fromUrlQueryString("main=%22bourg%22")}
+      onChange={params => {
+        setQueryString(toUrlQueryString(params));
+      }}
+      initialParams={fromUrlQueryString("main=%22bourg%22")}
     >
       <div>Params: {queryString}</div>
 
       <SearchBox id="main" customQuery={customQuery} />
+      <hr />
+      <Results item={(s, _, id) => <div key={id}>{s.TICO}</div>} />
+    </Elasticsearch>
+  );
+}
+
+function WithUrlParamsAndFacets() {
+  const [queryString, setQueryString] = useState("");
+  return (
+    <Elasticsearch
+      url={url}
+      onChange={params => {
+        setQueryString(toUrlQueryString(params));
+      }}
+      initialParams={fromUrlQueryString("main=%22maison%22&author=%5B%22architecte%22%5D")}
+    >
+      <div>Params: {queryString}</div>
+      <SearchBox id="main" customQuery={customQuery} />
+      <Facet id="author" fields={["AUTR.keyword"]} />
+      
       <hr />
       <Results item={(s, _, id) => <div key={id}>{s.TICO}</div>} />
     </Elasticsearch>
@@ -48,4 +70,5 @@ storiesOf("Elasticsearch", module)
       </Elasticsearch>
     );
   })
-  .add("with url params", () => <WithUrlParams />);
+  .add("with url params", () => <WithUrlParams />)
+  .add("with url params AND facets", () => <WithUrlParamsAndFacets />);

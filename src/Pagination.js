@@ -18,21 +18,19 @@ function buttons(page, max) {
 
 export default function({ onChange, total, itemsPerPage, page }) {
   const max = Math.min(Math.ceil(total / itemsPerPage), 10000 / itemsPerPage);
-
-  return (
-    <ul className="react-es-pagination">
-      {buttons(page, max)
-        .filter(e => e <= max)
-        .map(i => {
-          if (Number.isInteger(i)) {
-            return (
-              <li key={i} className={page === i ? "react-es-pagination-active-page" : ""}>
-                <button onClick={() => onChange(i)}>{i}</button>
-              </li>
-            );
-          }
+  function renderButtons() {
+    return buttons(page, max)
+      .filter(e => e <= max)
+      .map(i => {
+        if (!Number.isInteger(i)) {
           return <li key={i}>...</li>;
-        })}
-    </ul>
-  );
+        }
+        return (
+          <li key={i} className={page === i ? "react-es-pagination-active-page" : ""}>
+            <button onClick={() => onChange(i)}>{i}</button>
+          </li>
+        );
+      });
+  }
+  return <ul className="react-es-pagination">{renderButtons()}</ul>;
 }

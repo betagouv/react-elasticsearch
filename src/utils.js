@@ -44,3 +44,7 @@ export function toUrlQueryString(params) {
     Object.fromEntries(new Map(Array.from(params).map(([k, v]) => [k, JSON.stringify(v)])))
   );
 }
+
+export function toString(reactives) {
+  return JSON.stringify(Object.fromEntries(reactives));
+}

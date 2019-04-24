@@ -7,12 +7,6 @@ export default function({ customQuery, fields, id }) {
   const defaultValue = current ? current.value : "";
   const [value, setValue] = useState(defaultValue);
 
-  useEffect(() => {
-    if (defaultValue) {
-      update(defaultValue);
-    }
-  }, [defaultValue]);
-
   function queryFromValue(query) {
     if (customQuery) {
       return customQuery(query);
@@ -22,14 +16,21 @@ export default function({ customQuery, fields, id }) {
     return [{ match_all: {} }];
   }
 
-  function update(v) {
+  function updateContext(v) {
     dispatch({ type: "update", key: id, query: v => queryFromValue(v), value: v });
     setValue(v);
   }
 
+  // Init values with default
+  useEffect(() => {
+    if (defaultValue) {
+      updateContext(defaultValue);
+    }
+  }, [defaultValue]);
+
   return (
     <div className="react-es-searchbox">
-      <input type="text" value={value} onChange={e => update(e.target.value)} />
+      <input type="text" value={value} onChange={e => updateContext(e.target.value)} />
     </div>
   );
 }

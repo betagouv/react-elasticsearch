@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { msearch, queryFrom } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 import Pagination from "./Pagination";
 
-// Pagination, informations about results (like "30 results")
+// Pagination, stats function (like "30 results"), item
 // and size (number items per page) are customizable.
 export default function({ size, pagination, stats, item }) {
   const [{ result }, dispatch] = useSharedContext();

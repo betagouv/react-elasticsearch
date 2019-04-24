@@ -3,13 +3,17 @@ import { SharedContextProvider } from "./SharedContextProvider";
 import Listener from "./Listener";
 
 // Main component. See storybook for usage.
-export default function({ children, url, onChange, defaultParams }) {
-  console.log(defaultParams, new Map([["main", {value: "bourg"}]]))
+export default function({ children, url, onChange, initialParams }) {
+  function defaultQuery() {
+    return new Map([
+      ["__default", { value: "", query: () => ({ bool: { must: [{ match_all: {} }] } }) }]
+    ]);
+  }
+
   const initialState = {
-    reactives: defaultParams || new Map(),
+    reactives: initialParams || defaultQuery(),
     result: null,
     page: 1,
-    // defaultParams: defaultParams || new Map(),
     url
   };
 
@@ -31,7 +35,7 @@ export default function({ children, url, onChange, defaultParams }) {
 
   return (
     <SharedContextProvider initialState={initialState} reducer={reducer}>
-      <Listener onChange={onChange} defaultParams={defaultParams}>
+      <Listener onChange={onChange} initialParams={initialParams}>
         {children}
       </Listener>
     </SharedContextProvider>
