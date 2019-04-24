@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSharedContext } from "./SharedContextProvider";
 
 export default function({ customQuery, fields, id }) {
-  const [{}, dispatch] = useSharedContext();
-  const [value, setValue] = useState("");
+  const [{ defaultParams }, dispatch] = useSharedContext();
+  const defaultValue = defaultParams.get(id) || "";
+  const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    update(defaultValue);
+  }, [defaultValue]);
 
   function queryFromValue(query) {
     if (customQuery) {
@@ -11,12 +16,12 @@ export default function({ customQuery, fields, id }) {
     } else if (fields) {
       return query ? { multi_match: { query, type: "phrase", fields } } : { match_all: {} };
     }
-    return { match_all: {} };
+    return [{ match_all: {} }];
   }
 
   function update(v) {
+    dispatch({ type: "update", key: id, query: v => queryFromValue(v), value: v });
     setValue(v);
-    dispatch({ type: "update", key: id, query: queryFromValue(v), values: v });
   }
 
   return (

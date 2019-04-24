@@ -14,9 +14,9 @@ export function msearch(url, query) {
   });
 }
 
-// Build a query from a Map of queries
+// Build a query from an array of queries
 export function queryFrom(queries) {
-  return { bool: { must: queries.size === 0 ? { match_all: {} } : Array.from(queries.values()) } };
+  return { bool: { must: queries.length === 0 ? [{ match_all: {} }] : queries } };
 }
 
 // Convert fields to term queries

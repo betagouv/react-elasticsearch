@@ -3,7 +3,7 @@ import { msearch, toTermQueries, queryFrom } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
 export default function({ fields, id }) {
-  const [{ queries, url }, dispatch] = useSharedContext();
+  const [{ reactives, url }, dispatch] = useSharedContext();
   const [data, setData] = useState([]);
   const [filterValue, setFilterValue] = useState("");
   const [size, setSize] = useState(5);
@@ -18,9 +18,7 @@ export default function({ fields, id }) {
       function aggsFromFields() {
         // Remove current query from queries list (do not react to self)
         function withoutOwnQueries() {
-          const q = new Map(queries);
-          q.delete(id);
-          return q;
+          return new Map(Array.from(reactives).filter(([k, _v]) => k !== id));
         }
         // Transform a single field to agg query
         function aggFromField(field) {
@@ -35,14 +33,18 @@ export default function({ fields, id }) {
         fields.forEach(f => {
           result = { ...result, ...aggFromField(f) };
         });
-        return { query: queryFrom(withoutOwnQueries()), size: 0, aggs: result };
+        return {
+          query: queryFrom(Array.from(withoutOwnQueries(), ([k, v]) => v.query(v.value))),
+          size: 0,
+          aggs: result
+        };
       }
       // Use previous function to perform query to elasticsearch endpoint
       const result = await msearch(url, aggsFromFields());
       setData(result.responses[0].aggregations[fields[0]].buckets);
     }
     fetchData();
-  }, [filterValue, size, JSON.stringify(queryFrom(queries))]);
+  }, [filterValue, size, JSON.stringify(Object.fromEntries(reactives))]);
 
   return (
     <div className="react-es-facet">
@@ -69,10 +71,8 @@ export default function({ fields, id }) {
               dispatch({
                 type: "update",
                 key: id,
-                query: {
-                  bool: { should: toTermQueries(fields, newSelectedInputs) }
-                },
-                values: selectedInputs
+                value: newSelectedInputs,
+                query: v => ({ bool: { should: toTermQueries(fields, v) } })
               });
             }}
           />

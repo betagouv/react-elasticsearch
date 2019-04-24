@@ -9,7 +9,7 @@ storiesOf("Results", module)
       <Elasticsearch url={url}>
         <Results
           item={(source, score, id) => (
-            <div>
+            <div key={id}>
               <b>{source.TICO}</b> - score: {score} - id: {id}
             </div>
           )}
@@ -21,7 +21,7 @@ storiesOf("Results", module)
     return (
       <Elasticsearch url={url}>
         <Results
-          item={source => <div>{source.TICO}</div>}
+          item={(source, _score, id) => <div key={id}>{source.TICO}</div>}
           pagination={(total, size, page) => (
             <div style={{ color: "green" }}>
               Total : {total} - Size : {size} - Page: {page} CUSTOM!

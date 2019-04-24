@@ -5,7 +5,6 @@ import {
   SearchBox,
   Facet,
   Results,
-  Listener,
   toUrlQueryString,
   fromUrlQueryString
 } from "../src";
@@ -14,20 +13,18 @@ import { customQuery, url } from "./utils";
 function WithUrlParams() {
   const [queryString, setQueryString] = useState("");
   return (
-    <Elasticsearch url={url}>
+    <Elasticsearch
+      url={url}
+      onChange={params => {
+        setQueryString(toUrlQueryString(params));
+      }}
+      defaultParams={fromUrlQueryString("main=%22bourg%22")}
+    >
       <div>Params: {queryString}</div>
-      <Listener
-        onChange={params => {
-          setQueryString(toUrlQueryString(params));
-        }}
-        onMount={dispatch => {
-          console.log("mounr")
-          dispatch({ type: "setInitialParams", params: fromUrlQueryString("main=%22hello%22") });
-        }}
-      />
+
       <SearchBox id="main" customQuery={customQuery} />
       <hr />
-      <Results item={s => <div>{s.TICO}</div>} />
+      <Results item={(s, _, id) => <div key={id}>{s.TICO}</div>} />
     </Elasticsearch>
   );
 }
