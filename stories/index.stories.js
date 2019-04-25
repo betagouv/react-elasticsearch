@@ -13,21 +13,15 @@ import { customQuery, url } from "./utils";
 
 function WithUrlParams() {
   const [queryString, setQueryString] = useState("");
+
+  const initialValues = fromUrlQueryString("main=%22hell%22");
   return (
-    <Elasticsearch url={url}>
+    <Elasticsearch url={url} onChange={() => {} /* params => setQueryString(toUrlQueryString(params)) */}>
       <div>Params: {queryString}</div>
-      <Listener
-        onChange={params => {
-          setQueryString(toUrlQueryString(params));
-        }}
-        onMount={dispatch => {
-          console.log("mounr")
-          dispatch({ type: "setInitialParams", params: fromUrlQueryString("main=%22hello%22") });
-        }}
-      />
-      <SearchBox id="main" customQuery={customQuery} />
+      <SearchBox id="main" customQuery={customQuery} initialValue={initialValues.get("main")} />
       <hr />
-      <Results item={s => <div>{s.TICO}</div>} />
+      <Facet id="author" fields={["AUTR.keyword"]} />
+      <Results id="result" item={s => <div>{s.TICO}</div>} />
     </Elasticsearch>
   );
 }
@@ -44,6 +38,7 @@ storiesOf("Elasticsearch", module)
           <Facet id="domn" fields={["DOMN.keyword"]} />
         </div>
         <Results
+          id="result" 
           item={(source, score, id) => (
             <div key={id}>
               <b>{source.TICO}</b> - score: {score}

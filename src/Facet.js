@@ -3,12 +3,27 @@ import { msearch, toTermQueries, queryFrom } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
 export default function({ fields, id }) {
-  const [{ queries, url }, dispatch] = useSharedContext();
-  const [data, setData] = useState([]);
+  const [{ queries, url, results }, dispatch] = useSharedContext();
+  // const [data, setData] = useState([]);
   const [filterValue, setFilterValue] = useState("");
   const [size, setSize] = useState(5);
   const [selectedInputs, setSelectedInputs] = useState([]);
 
+  const data = results.get(id) ? results.get(id).data : [];
+  const total = results.get(id) ? results.get(id).total : 0;
+
+  console.log("ppp", results.get(id));
+
+  useEffect(() => {
+    dispatch({
+      type: "update",
+      key: id,
+      query: { bool: { should: toTermQueries(fields, selectedInputs) } },
+      values: selectedInputs
+    });
+  }, []);
+
+  /*
   // This effect reloads data on `filterValue`, `size` or `queries` change.
   useEffect(() => {
     // Get all data (aggs) for the facet list
@@ -43,7 +58,7 @@ export default function({ fields, id }) {
     }
     fetchData();
   }, [filterValue, size, JSON.stringify(queryFrom(queries))]);
-
+*/
   return (
     <div className="react-es-facet">
       <input
