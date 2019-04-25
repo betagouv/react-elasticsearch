@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function({ customQuery, fields, id }) {
+export default function({ customQuery, fields, id, initialValue }) {
   const [{}, dispatch] = useSharedContext();
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(initialValue || "");
 
+  // Update external query on mount.
+  useEffect(() => {
+    update(value);
+  }, [])
+
+  // Build a query from a value
   function queryFromValue(query) {
     if (customQuery) {
       return customQuery(query);
@@ -16,7 +22,7 @@ export default function({ customQuery, fields, id }) {
 
   function update(v) {
     setValue(v);
-    dispatch({ type: "update", key: id, query: queryFromValue(v), values: v });
+    dispatch({ type: "setQuery", key: id, query: queryFromValue(v), values: v });
   }
 
   return (

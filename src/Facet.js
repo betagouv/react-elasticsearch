@@ -1,48 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { msearch, toTermQueries, queryFrom } from "./utils";
+import { toTermQueries } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
 export default function({ fields, id }) {
-  const [{ queries, url }, dispatch] = useSharedContext();
-  const [data, setData] = useState([]);
+  const [{ results }, dispatch] = useSharedContext();
+  // Current filter (search inside facet value).
   const [filterValue, setFilterValue] = useState("");
+  // Number of itemns displayed in facet.
   const [size, setSize] = useState(5);
+  // The actual selected items in facet.
   const [selectedInputs, setSelectedInputs] = useState([]);
+  // Data from internal queries (Elasticsearch queries are performed via Listener)
+  const data = results.get(id) ? results.get(id).data : [];
 
-  // This effect reloads data on `filterValue`, `size` or `queries` change.
+  // Update Component configuration (in order to change context) on change 
+  // (see Component properties below).
   useEffect(() => {
-    // Get all data (aggs) for the facet list
-    async function fetchData() {
-      // Get the aggs (elasticsearch queries) from fields
-      // Dirtiest part, because we build a raw query from various params
-      function aggsFromFields() {
-        // Remove current query from queries list (do not react to self)
-        function withoutOwnQueries() {
-          const q = new Map(queries);
-          q.delete(id);
-          return q;
-        }
-        // Transform a single field to agg query
-        function aggFromField(field) {
-          const t = { field, order: { _count: "desc" }, size };
-          if (filterValue) {
-            t.include = `.*${filterValue}.*`;
-          }
-          return { [field]: { terms: t } };
-        }
-        // Actually build the query from fields
-        let result = {};
-        fields.forEach(f => {
-          result = { ...result, ...aggFromField(f) };
-        });
-        return { query: queryFrom(withoutOwnQueries()), size: 0, aggs: result };
-      }
-      // Use previous function to perform query to elasticsearch endpoint
-      const result = await msearch(url, aggsFromFields());
-      setData(result.responses[0].aggregations[fields[0]].buckets);
-    }
-    fetchData();
-  }, [filterValue, size, JSON.stringify(queryFrom(queries))]);
+    dispatch({ type: "setConfiguration", key: id, size, filterValue });
+  }, [size, filterValue]);
+
+  // Update external query on mount.
+  useEffect(() => {
+    dispatch({
+      type: "setQuery",
+      key: id,
+      query: { bool: { should: toTermQueries(fields, selectedInputs) } },
+      values: selectedInputs
+    });
+  }, []);
 
   return (
     <div className="react-es-facet">
@@ -67,7 +52,7 @@ export default function({ fields, id }) {
               setSelectedInputs(newSelectedInputs);
               // Update external queries.
               dispatch({
-                type: "update",
+                type: "setQuery",
                 key: id,
                 query: {
                   bool: { should: toTermQueries(fields, newSelectedInputs) }

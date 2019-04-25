@@ -2,6 +2,7 @@ import fetch from "unfetch";
 import qs from "qs";
 
 // Search with msearch to elasticsearch instance
+// Todo reject.
 export function msearch(url, query) {
   return new Promise(async (resolve, reject) => {
     const rawResponse = await fetch(`${url}/_msearch`, {
@@ -30,10 +31,14 @@ export function toTermQueries(fields, selectedValues) {
   return queries;
 }
 
+// Todo: clean this ugly funtion
 export function fromUrlQueryString(str) {
-  return new Map([...Object.entries(qs.parse(str.replace(/^\?/, ""))).map(([k, v]) => [k, JSON.parse(v)])])
+  return new Map([
+    ...Object.entries(qs.parse(str.replace(/^\?/, ""))).map(([k, v]) => [k, JSON.parse(v)])
+  ]);
 }
 
+// Todo: clean this ugly funtion
 export function toUrlQueryString(params) {
   return qs.stringify(
     Object.fromEntries(new Map(Array.from(params).map(([k, v]) => [k, JSON.stringify(v)])))

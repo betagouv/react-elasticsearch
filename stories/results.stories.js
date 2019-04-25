@@ -22,9 +22,9 @@ storiesOf("Results", module)
       <Elasticsearch url={url}>
         <Results
           item={source => <div>{source.TICO}</div>}
-          pagination={(total, size, page) => (
+          pagination={(total, itemsPerPage, page) => (
             <div style={{ color: "green" }}>
-              Total : {total} - Size : {size} - Page: {page} CUSTOM!
+              Total : {total} - ItemsPerPage : {itemsPerPage} - Page: {page} CUSTOM!
             </div>
           )}
         />
