@@ -6,7 +6,7 @@ function Parent({ children }) {
   const initialState = { queries: [] };
   const reducer = (state, action) => {
     switch (action.type) {
-      case "update":
+      case "setQuery":
         const { queries } = state;
         queries.push(action.query);
         return { ...state, queries };
@@ -51,7 +51,7 @@ function Listener({ children }) {
 function Child({}) {
   const [{}, dispatch] = useSharedContext();
   useEffect(() => {
-    dispatch({ type: "update", query: Math.random() });
+    dispatch({ type: "setQuery", query: Math.random() });
   }, []);
   return <div>{Math.random()}</div>;
 }

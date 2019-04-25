@@ -5,10 +5,13 @@ import SearchBox from "./SearchBox";
 import Facet from "./Facet";
 import Results from "./Results";
 
+// This component needs to be cleaned.
 export default function({ children, onChange }) {
-  const [{ queries, url }, dispatch] = useSharedContext();
+  const [{ queries, url, configurations }, dispatch] = useSharedContext();
 
+  // Run effect on update for each change in queries or configuration.
   useEffect(() => {
+    // Children are flattened, in order to check their "kind" (search, result, etc.)
     function flatChildren(arr, initial) {
       return arr.reduce((accumulator, current) => {
         if (!React.isValidElement(current)) {
@@ -23,22 +26,25 @@ export default function({ children, onChange }) {
         return [...accumulator, current];
       }, initial || []);
     }
-
     const flat = flatChildren(React.Children.toArray(children));
     const searchComponents = flat.filter(e => e.type === SearchBox || e.type === Facet);
     const resultComponents = flat.filter(e => e.type === Results);
     const facetComponents = flat.filter(e => e.type === Facet);
+
+    // The main condition. Do not modifiy! It ensures search queries are 
+    // performed after children have initialized their contextual properties.
     if (queries.size === searchComponents.length) {
+      // Fetch data for results components.
       resultComponents.forEach(r => {
         async function fetchData() {
           const result = await msearch(url, {
             query: queryFrom(queries),
-            size: 10, // FIX
-            from: 0 /* (page - 1) * size */ // FIX
+            size: configurations.get(r.props.id).itemsPerPage,
+            from: (configurations.get(r.props.id).page - 1) * configurations.get(r.props.id).itemsPerPage
           });
           console.log(r.props.id, result.responses[0].hits.total);
           dispatch({
-            type: "results",
+            type: "setResult",
             key: r.props.id,
             data: result.responses[0].hits.hits,
             total: result.responses[0].hits.total
@@ -47,10 +53,11 @@ export default function({ children, onChange }) {
         fetchData();
       });
       
+      // Fetch data for internal facet components.
       facetComponents.forEach(f => {
         const { id, fields } = f.props;
-        const size = 5; // FIX
-        const filterValue = ""; // FIX
+        const size = configurations.get(id).size;
+        const filterValue = configurations.get(id).filterValue;
         async function fetchData() {
           // Get the aggs (elasticsearch queries) from fields
           // Dirtiest part, because we build a raw query from various params
@@ -80,7 +87,7 @@ export default function({ children, onChange }) {
           const result = await msearch(url, aggsFromFields());
           // setData(result.responses[0].aggregations[fields[0]].buckets);
           dispatch({
-            type: "results",
+            type: "setResult",
             key: id,
             data: result.responses[0].aggregations[fields[0]].buckets,
             total: result.responses[0].hits.total
@@ -90,8 +97,9 @@ export default function({ children, onChange }) {
       });
       
     }
-  }, [JSON.stringify(Array.from(queries))]);
+  }, [JSON.stringify(Array.from(queries)), JSON.stringify(Array.from(configurations)) ]);
 
+  // Todo: currently disabled.
   useEffect(() => {
     onChange && onChange(/* params */);
   });
