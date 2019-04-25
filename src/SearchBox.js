@@ -1,15 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function({ customQuery, fields, id }) {
+export default function({ customQuery, fields, id, defaultValue, ...rest }) {
   const [{}, dispatch] = useSharedContext();
   const [value, setValue] = useState("");
 
-  function queryFromValue(query) {
+  // only on call because of []
+  useEffect(() => {
+    if (defaultValue) {
+      setValue(defaultValue);
+    }
+  }, []);
+
+  function queryFromValue(value) {
     if (customQuery) {
-      return customQuery(query);
+      return customQuery(value);
     } else if (fields) {
-      return query ? { multi_match: { query, type: "phrase", fields } } : { match_all: {} };
+      return value ? { multi_match: { query: value, type: "phrase", fields } } : { match_all: {} };
     }
     return { match_all: {} };
   }
@@ -20,7 +27,7 @@ export default function({ customQuery, fields, id }) {
   }
 
   return (
-    <div className="react-es-searchbox">
+    <div className="react-es-searchbox" {...rest}>
       <input type="text" value={value} onChange={e => update(e.target.value)} />
     </div>
   );

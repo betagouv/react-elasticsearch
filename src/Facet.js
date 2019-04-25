@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { msearch, toTermQueries, queryFrom } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function({ fields, id }) {
+export default function({ fields, id, ...rest }) {
   const [{ queries, url }, dispatch] = useSharedContext();
   const [data, setData] = useState([]);
   const [filterValue, setFilterValue] = useState("");
@@ -45,7 +45,7 @@ export default function({ fields, id }) {
   }, [filterValue, size, JSON.stringify(queryFrom(queries))]);
 
   return (
-    <div className="react-es-facet">
+    <div className="react-es-facet" {...rest}>
       <input
         value={filterValue}
         placeholder="Filter facet"

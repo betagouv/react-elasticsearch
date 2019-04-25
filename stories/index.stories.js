@@ -11,21 +11,15 @@ import {
 } from "../src";
 import { customQuery, url } from "./utils";
 
+const style = { border: "1px solid", padding: "20px", margin: "10px" };
+
 function WithUrlParams() {
   const [queryString, setQueryString] = useState("");
   return (
     <Elasticsearch url={url}>
       <div>Params: {queryString}</div>
-      <Listener
-        onChange={params => {
-          setQueryString(toUrlQueryString(params));
-        }}
-        onMount={dispatch => {
-          console.log("mounr")
-          dispatch({ type: "setInitialParams", params: fromUrlQueryString("main=%22hello%22") });
-        }}
-      />
-      <SearchBox id="main" customQuery={customQuery} />
+      <SearchBox style={style} id="main" defaultValue="hello" customQuery={customQuery} />
+      <Facet style={style} id="author" fields={["AUTR.keyword"]} />
       <hr />
       <Results item={s => <div>{s.TICO}</div>} />
     </Elasticsearch>
