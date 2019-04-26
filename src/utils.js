@@ -45,7 +45,7 @@ export function toUrlQueryString(params) {
     Object.fromEntries(
       new Map(
         Array.from(params)
-          .filter(([k, v]) => (Array.isArray(v) ? v.length : v))
+          .filter(([_k, v]) => (Array.isArray(v) ? v.length : v))
           .map(([k, v]) => [k, JSON.stringify(v)])
       )
     )
