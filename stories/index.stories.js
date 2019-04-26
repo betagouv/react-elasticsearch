@@ -16,7 +16,9 @@ function WithUrlParams() {
 
   const initialValues = fromUrlQueryString("main=%22hell%22");
   return (
-    <Elasticsearch url={url} onChange={() => {} /* params => setQueryString(toUrlQueryString(params)) */}>
+    <Elasticsearch url={url} onChange={values => { 
+      setQueryString(toUrlQueryString(values));
+    }}>
       <div>Params: {queryString}</div>
       <SearchBox id="main" customQuery={customQuery} initialValue={initialValues.get("main")} />
       <hr />

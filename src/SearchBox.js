@@ -22,7 +22,7 @@ export default function({ customQuery, fields, id, initialValue }) {
 
   function update(v) {
     setValue(v);
-    dispatch({ type: "setQuery", key: id, query: queryFromValue(v), values: v });
+    dispatch({ type: "setQuery", key: id, query: queryFromValue(v), value: v });
   }
 
   return (

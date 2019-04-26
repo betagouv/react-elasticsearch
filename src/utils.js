@@ -40,7 +40,14 @@ export function fromUrlQueryString(str) {
 
 // Todo: clean this ugly funtion
 export function toUrlQueryString(params) {
+  console.log(Array.from(params));
   return qs.stringify(
-    Object.fromEntries(new Map(Array.from(params).map(([k, v]) => [k, JSON.stringify(v)])))
+    Object.fromEntries(
+      new Map(
+        Array.from(params)
+          .filter(([k, v]) => Array.isArray(v) ? v.length : v )
+          .map(([k, v]) => [k, JSON.stringify(v)])
+      )
+    )
   );
 }

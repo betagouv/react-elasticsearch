@@ -7,7 +7,12 @@ import Results from "./Results";
 
 // This component needs to be cleaned.
 export default function({ children, onChange }) {
-  const [{ queries, url, configurations }, dispatch] = useSharedContext();
+  const [{ queries, url, configurations, values }, dispatch] = useSharedContext();
+
+  // Apply callback effect on every change, useful for query params.
+  useEffect(() => {
+    onChange && onChange(values);
+  })
 
   // Run effect on update for each change in queries or configuration.
   useEffect(() => {
@@ -42,7 +47,6 @@ export default function({ children, onChange }) {
             size: configurations.get(r.props.id).itemsPerPage,
             from: (configurations.get(r.props.id).page - 1) * configurations.get(r.props.id).itemsPerPage
           });
-          console.log(r.props.id, result.responses[0].hits.total);
           dispatch({
             type: "setResult",
             key: r.props.id,
@@ -98,11 +102,6 @@ export default function({ children, onChange }) {
       
     }
   }, [JSON.stringify(Array.from(queries)), JSON.stringify(Array.from(configurations)) ]);
-
-  // Todo: currently disabled.
-  useEffect(() => {
-    onChange && onChange(/* params */);
-  });
 
   return <>{children}</>;
 }

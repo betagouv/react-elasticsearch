@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { toTermQueries } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function({ fields, id }) {
+export default function({ fields, id, initialValue }) {
   const [{ results }, dispatch] = useSharedContext();
   // Current filter (search inside facet value).
   const [filterValue, setFilterValue] = useState("");
   // Number of itemns displayed in facet.
   const [size, setSize] = useState(5);
   // The actual selected items in facet.
-  const [selectedInputs, setSelectedInputs] = useState([]);
+  const [selectedInputs, setSelectedInputs] = useState(initialValue || []);
   // Data from internal queries (Elasticsearch queries are performed via Listener)
   const data = results.get(id) ? results.get(id).data : [];
 
@@ -25,7 +25,7 @@ export default function({ fields, id }) {
       type: "setQuery",
       key: id,
       query: { bool: { should: toTermQueries(fields, selectedInputs) } },
-      values: selectedInputs
+      value: selectedInputs
     });
   }, []);
 
@@ -57,7 +57,7 @@ export default function({ fields, id }) {
                 query: {
                   bool: { should: toTermQueries(fields, newSelectedInputs) }
                 },
-                values: selectedInputs
+                value: newSelectedInputs
               });
             }}
           />
