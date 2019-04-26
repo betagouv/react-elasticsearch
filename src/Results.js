@@ -11,6 +11,10 @@ export default function({ itemsPerPage, pagination, stats, item, id }) {
   const total = results.get(id) ? results.get(id).total : 0;
   itemsPerPage = itemsPerPage || 10;
 
+  useEffect(() => {
+    setPage(1);
+  }, [total]);
+
   // Update context with page (and itemsPerPage)
   useEffect(() => {
     dispatch({ type: "setConfiguration", key: id, itemsPerPage, page });
