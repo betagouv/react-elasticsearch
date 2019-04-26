@@ -3,13 +3,14 @@ import qs from "qs";
 
 // Search with msearch to elasticsearch instance
 // Todo reject.
-export function msearch(url, query) {
+export function msearch(url, msearchData) {
   return new Promise(async (resolve, reject) => {
-    const rawResponse = await fetch(`${url}/_msearch`, {
-      method: "POST",
-      headers: { Accept: "application/json", "Content-Type": "application/x-ndjson" },
-      body: `{}\n${JSON.stringify(query)}\n`
-    });
+    const headers = { Accept: "application/json", "Content-Type": "application/x-ndjson" };
+    const body = msearchData.reduce((acc, val) => {
+      const [p, q] = [{ preference: val.id }, val.query].map(JSON.stringify);
+      return `${acc}${p}\n${q}\n`;
+    }, "");
+    const rawResponse = await fetch(`${url}/_msearch`, { method: "POST", headers, body });
     const response = await rawResponse.json();
     resolve(response);
   });
@@ -40,12 +41,11 @@ export function fromUrlQueryString(str) {
 
 // Todo: clean this ugly funtion
 export function toUrlQueryString(params) {
-  console.log(Array.from(params));
   return qs.stringify(
     Object.fromEntries(
       new Map(
         Array.from(params)
-          .filter(([k, v]) => Array.isArray(v) ? v.length : v )
+          .filter(([k, v]) => (Array.isArray(v) ? v.length : v))
           .map(([k, v]) => [k, JSON.stringify(v)])
       )
     )

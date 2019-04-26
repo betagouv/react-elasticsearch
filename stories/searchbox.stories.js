@@ -10,7 +10,7 @@ storiesOf("SearchBox", module)
         <h1>Search on AUTR field</h1>
         <pre>{`<SearchBox id="main" fields={["AUTR"]} />`}</pre>
         <SearchBox id="main" fields={["AUTR"]} />
-        <Results item={s => <div>{s.TICO} - {s.AUTR}</div>} pagination={() => <></>} />
+        <Results id="result" item={s => <div>{s.TICO} - {s.AUTR}</div>} pagination={() => <></>} />
       </Elasticsearch>
     );
   })
@@ -20,7 +20,7 @@ storiesOf("SearchBox", module)
         <h1>Search on TICO field with custom query</h1>
         <pre>{`<SearchBox id="main" customQuery={customQuery} />`}</pre>
         <SearchBox id="main" customQuery={customQuery} />
-        <Results item={s => <div>{s.TICO}</div>} pagination={() => <></>} />
+        <Results id="result" item={s => <div>{s.TICO}</div>} pagination={() => <></>} />
       </Elasticsearch>
     );
   });

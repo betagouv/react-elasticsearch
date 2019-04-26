@@ -23,7 +23,7 @@ function WithUrlParams() {
       <SearchBox id="main" customQuery={customQuery} initialValue={initialValues.get("main")} />
       <hr />
       <Facet id="author" fields={["AUTR.keyword"]} />
-      <Results id="result" item={s => <div>{s.TICO}</div>} />
+      <Results id="result" item={(s, _s, id) => <div key={id}>{s.TICO}</div>} />
     </Elasticsearch>
   );
 }
