@@ -5,10 +5,11 @@ import Pagination from "./Pagination";
 // Pagination, informations about results (like "30 results")
 // and size (number items per page) are customizable.
 export default function({ itemsPerPage, pagination, stats, item, id }) {
-  const [{ results }, dispatch] = useSharedContext();
+  const [{ widgets }, dispatch] = useSharedContext();
   const [page, setPage] = useState(1);
-  const data = results.get(id) ? results.get(id).data : [];
-  const total = results.get(id) ? results.get(id).total : 0;
+  const widget = widgets.get(id);
+  const data = widget && widget.result && widget.result.data ? widget.result.data : [];
+  const total = widget && widget.result && widget.result.total ? widget.result.total : 0;
   itemsPerPage = itemsPerPage || 10;
 
   useEffect(() => {
@@ -17,7 +18,18 @@ export default function({ itemsPerPage, pagination, stats, item, id }) {
 
   // Update context with page (and itemsPerPage)
   useEffect(() => {
-    dispatch({ type: "setConfiguration", key: id, itemsPerPage, page });
+    dispatch({
+      type: "setWidget",
+      key: id,
+      needsQuery: false,
+      needsConfiguration: true,
+      isFacet: false,
+      wantResults: true,
+      query: null,
+      value: null,
+      configuration: { itemsPerPage, page },
+      result: data && total ? { data, total } : null
+    });
   }, [page]);
 
   const defaultPagination = () => (

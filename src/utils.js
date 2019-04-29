@@ -51,3 +51,8 @@ export function toUrlQueryString(params) {
     )
   );
 }
+
+const resolved = Promise.resolve();
+export const defer = f => {
+  resolved.then(f);
+};

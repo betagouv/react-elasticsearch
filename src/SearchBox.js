@@ -8,7 +8,7 @@ export default function({ customQuery, fields, id, initialValue }) {
   // Update external query on mount.
   useEffect(() => {
     update(value);
-  }, [])
+  }, []);
 
   // Build a query from a value
   function queryFromValue(query) {
@@ -22,7 +22,18 @@ export default function({ customQuery, fields, id, initialValue }) {
 
   function update(v) {
     setValue(v);
-    dispatch({ type: "setQuery", key: id, query: queryFromValue(v), value: v });
+    dispatch({
+      type: "setWidget",
+      key: id,
+      needsQuery: true,
+      needsConfiguration: false,
+      isFacet: false,
+      wantResults: false,
+      query: queryFromValue(v),
+      value: v,
+      configuration: null,
+      result: null
+    });
   }
 
   return (
