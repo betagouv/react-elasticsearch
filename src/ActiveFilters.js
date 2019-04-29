@@ -8,7 +8,7 @@ export default function({ item }) {
   const values = new Map([...widgets].filter(([, v]) => v.value).map(([k, v]) => [k, v.value]));
 
   const items = [...values]
-    .filter(([_k, v]) => (Array.isArray(v) ? v.length : v))
+    .filter(([, v]) => (Array.isArray(v) ? v.length : v))
     .map(([k, v]) => {
       return <li key={k}>{item ? item(k, v) : `${k} - ${v}`}</li>;
     });

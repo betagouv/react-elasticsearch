@@ -6,44 +6,45 @@ import { msearch, queryFrom, defer } from "./utils";
 export default function({ children, onChange }) {
   const [{ url, listenerEffect, widgets }, dispatch] = useSharedContext();
 
-  function onlyWidget(callback) {
-    return new Map([...widgets].filter(callback));
+  // We need to prepare some data in each render.
+  // This needs to be done out of the effect function.
+  function widgetThat(key) {
+    return new Map([...widgets].filter(([, v]) => v[key]));
   }
+  function mapFrom(key) {
+    return new Map([...widgets].filter(([, v]) => v[key]).map(([k, v]) => [k, v[key]]));
+  }
+  const configurableWidgets = widgetThat("needsConfiguration");
+  const facetWidgets = widgetThat("isFacet");
+  const searchWidgets = widgetThat("needsQuery");
+  const resultWidgets = widgetThat("wantResults");
+  const queries = mapFrom("query");
+  const configurations = mapFrom("configuration");
+  const values = mapFrom("value");
 
-  const queries = new Map([...widgets].filter(([, v]) => v.query).map(([k, v]) => [k, v.query]));
-  const configurations = new Map(
-    [...widgets].filter(([, v]) => v.configuration).map(([k, v]) => [k, v.configuration])
-  );
-  const searchComponents = onlyWidget(([, v]) => v.needsQuery);
-  const resultComponents = onlyWidget(([, v]) => v.wantResults);
-  const values = new Map(
-    [...widgets].filter(([, v]) => v.value).map(([k, v]) => [k, v.value])
-  );
-  const configurableComponents = onlyWidget(([, v]) => v.needsConfiguration);
-  const facetComponents = onlyWidget(([, v]) => v.isFacet);
-
-  // Apply callback effect on every change, useful for query params.
   useEffect(() => {
+    // Apply custom callback effect on every change, useful for query params.
     onChange && onChange(values);
+    // Run the deferred (thx algolia) listener effect.
     listenerEffect && listenerEffect();
   });
 
   // Run effect on update for each change in queries or configuration.
   useEffect(() => {
-    const queriesReady = queries.size === searchComponents.size;
-    const configurationsReady = configurations.size === configurableComponents.size;
+    // If you are debugging and your debug path leads you here, you might
+    // check configurableWidgets and searchWidgets actually covers
+    // the whole list of components that are configurables and queryable.
+    const queriesReady = queries.size === searchWidgets.size;
+    const configurationsReady = configurations.size === configurableWidgets.size;
     if (queriesReady && configurationsReady) {
+      // The actual query to ES is deffered, to wait for all effects 
+      // and context operations before running.
       defer(() => {
         dispatch({
           type: "setListenerEffect",
           value: () => {
             const msearchData = [];
-            // If you are debugging and your debug path leads you here, you might
-            // check configurableComponents and searchComponents actually covers
-            // the whole list of components that are configurables and queryable.
-            // On other hand, each configurable must dispacth a setConfiguration
-            // type in a useEffect function.
-            resultComponents.forEach((r, id) => {
+            resultWidgets.forEach((r, id) => {
               const { itemsPerPage, page } = r.configuration;
               msearchData.push({
                 query: {
@@ -58,7 +59,7 @@ export default function({ children, onChange }) {
             });
 
             // Fetch data for internal facet components.
-            facetComponents.forEach((f, id) => {
+            facetWidgets.forEach((f, id) => {
               const fields = f.configuration.fields;
               const size = f.configuration.size;
               const filterValue = f.configuration.filterValue;
@@ -95,7 +96,9 @@ export default function({ children, onChange }) {
               });
             });
 
+            // Fetch the data.
             async function fetchData() {
+              // Only if there is a query to run.
               if (msearchData.length) {
                 const result = await msearch(url, msearchData);
                 result.responses.forEach((response, key) => {
@@ -104,11 +107,13 @@ export default function({ children, onChange }) {
                     data: msearchData[key].data(response),
                     total: msearchData[key].total(response)
                   };
+                  // Update widget
                   dispatch({ type: "setWidget", key: msearchData[key].id, ...widget });
                 });
               }
             }
             fetchData();
+            // Destroy the effect listener to avoid infinite loop!
             dispatch({ type: "setListenerEffect", value: null });
           }
         });

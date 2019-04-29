@@ -11,12 +11,11 @@ export default function({ fields, id, initialValue }) {
   // The actual selected items in facet.
   const [selectedInputs, setSelectedInputs] = useState(initialValue || []);
   // Data from internal queries (Elasticsearch queries are performed via Listener)
-  const widget = widgets.get(id);
-  const data = widget && widget.result && widget.result.data ? widget.result.data : [];
-  const total = widget && widget.result && widget.result.total ? widget.result.total : 0;
+  const { result } = widgets.get(id) || {};
+  const data = (result && result.data) || [];
+  const total = (result && result.total) || 0;
 
-  // Update Component configuration (in order to change context) on change
-  // (see Component properties below).
+  // Update Widget properties (in order to change context) on change.
   useEffect(() => {
     dispatch({
       type: "setWidget",
@@ -32,12 +31,8 @@ export default function({ fields, id, initialValue }) {
     });
   }, [size, filterValue, selectedInputs]);
 
-  // Destroy widget (remove from list to unapply conf)
-  useEffect(() => {
-    return function cleanUp() {
-      dispatch({ type: "deleteWidget", key: id });
-    };
-  }, []);
+  // Destroy widget from context (remove from the list to unapply its effects)
+  useEffect(() => () => dispatch({ type: "deleteWidget", key: id }), []);
 
   return (
     <div className="react-es-facet">
