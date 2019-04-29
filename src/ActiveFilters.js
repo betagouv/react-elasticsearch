@@ -12,5 +12,5 @@ export default function({ item }) {
       return <li key={k}>{item ? item(k, v) : `${k} - ${v}`}</li>;
     });
 
-  return <div className="react-es-active-filters">{items.length ? <ul>{items}</ul> : <></>}</div>;
+  return <div className="react-es-active-filters">{items.length ? <ul>{items}</ul> : <div></div>}</div>;
 }

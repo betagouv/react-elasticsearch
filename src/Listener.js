@@ -19,10 +19,7 @@ export default function({ children, onChange }) {
     // Children are flattened, in order to check their "kind" (search, result, etc.)
     function flatChildren(arr, initial) {
       return arr.reduce((accumulator, current) => {
-        if (!React.isValidElement(current)) {
-          return current;
-        }
-        if (current.props.children) {
+        if (React.isValidElement(current) && current.props.children) {
           return flatChildren(React.Children.toArray(current.props.children), [
             ...accumulator,
             current
@@ -31,7 +28,9 @@ export default function({ children, onChange }) {
         return [...accumulator, current];
       }, initial || []);
     }
+    console.log(React.Children.toArray(children));
     const flat = flatChildren(React.Children.toArray(children));
+    console.log(flat);
     const searchComponents = flat.filter(e => e.type === SearchBox || e.type === Facet);
     const resultComponents = flat.filter(e => e.type === Results);
     const facetComponents = flat.filter(e => e.type === Facet);
@@ -41,6 +40,12 @@ export default function({ children, onChange }) {
     // performed after children have initialized their contextual properties.
     const queriesReady = queries.size === searchComponents.length;
     const configurationsReady = configurations.size === configurableComponents.length;
+    console.log({
+      "queries.size": queries.size,
+      searchComponents: searchComponents,
+      "configurations.size": configurations.size,
+      configurableComponents: configurableComponents
+    });
     if (queriesReady && configurationsReady) {
       const msearchData = [];
       // If you are debugging and your debug path leads you here, you might
