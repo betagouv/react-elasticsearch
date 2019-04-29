@@ -32,6 +32,13 @@ export default function({ fields, id, initialValue }) {
     });
   }, [size, filterValue, selectedInputs]);
 
+  // Destroy widget (remove from list to unapply conf)
+  useEffect(() => {
+    return function cleanUp() {
+      dispatch({ type: "deleteWidget", key: id });
+    };
+  }, []);
+
   return (
     <div className="react-es-facet">
       <input

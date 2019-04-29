@@ -30,7 +30,6 @@ export default function({ children, onChange }) {
 
   // Run effect on update for each change in queries or configuration.
   useEffect(() => {
-    console.log({ queries, configurations, searchComponents, configurableComponents });
     const queriesReady = queries.size === searchComponents.size;
     const configurationsReady = configurations.size === configurableComponents.size;
     if (queriesReady && configurationsReady) {
@@ -44,7 +43,6 @@ export default function({ children, onChange }) {
             // the whole list of components that are configurables and queryable.
             // On other hand, each configurable must dispacth a setConfiguration
             // type in a useEffect function.
-            console.log("resultComponents", resultComponents);
             resultComponents.forEach((r, id) => {
               const { itemsPerPage, page } = r.configuration;
               msearchData.push({
@@ -106,7 +104,6 @@ export default function({ children, onChange }) {
                     data: msearchData[key].data(response),
                     total: msearchData[key].total(response)
                   };
-                  console.log("widget", widget);
                   dispatch({ type: "setWidget", key: msearchData[key].id, ...widget });
                 });
               }
