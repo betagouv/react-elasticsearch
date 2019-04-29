@@ -1,11 +1,11 @@
 import React from "react";
 import { SharedContextProvider } from "./SharedContextProvider";
 import Listener from "./Listener";
-import { defer } from "./utils";
 
 // Main component. See storybook for usage.
 export default function({ children, url, onChange }) {
   const initialState = {
+    /*
     // These 4 Maps are about subcomponents properties.
     // Each key reprensent a component by its ID. It could
     // have been one map, but harder to update+consume separatly.
@@ -27,43 +27,33 @@ export default function({ children, url, onChange }) {
     facetComponents: new Map(),
     configurableComponents: new Map(),
     bigThing: null,
+    */
+    //**************/
+    url,
+    listenerEffect: null,
+    // {isSearchComponent}
+    widgets: new Map()
   };
 
   const reducer = (state, action) => {
     // See description above.
     switch (action.type) {
-      case "setBigThing":
-        return { ...state, bigThing: action.value };
-      case "setSearchComponents":
-        const { searchComponents } = state;
-        searchComponents.set(action.key, action.key);
-        return { ...state, searchComponents };
-      case "setResultComponents":
-        const { resultComponents } = state;
-        resultComponents.set(action.key, action.key);
-        return { ...state, resultComponents };
-      case "setFacetComponents":
-        const { facetComponents } = state;
-        facetComponents.set(action.key, action.key);
-        return { ...state, facetComponents };
-      case "setConfigurableComponents":
-        const { configurableComponents } = state;
-        configurableComponents.set(action.key, action.key);
-        return { ...state, configurableComponents };
-      case "setQuery":
-        const { queries, values } = state;
-        queries.set(action.key, action.query);
-        values.set(action.key, action.value);
-        return { ...state, queries, values };
-      case "setResult":
-        const { results } = state;
-        results.set(action.key, { data: action.data, total: action.total });
-        return { ...state, results };
-      case "setConfiguration":
-        const { configurations } = state;
-        const { key, ...rest } = action;
-        configurations.set(key, rest);
-        return { ...state, configurations };
+      case "setWidget":
+        const widget = {
+          needsQuery: action.needsQuery,
+          needsConfiguration: action.needsConfiguration,
+          isFacet: action.isFacet,
+          wantResults: action.wantResults,
+          query: action.query,
+          value: action.value,
+          configuration: action.configuration,
+          result: action.result
+        };
+        const { widgets } = state;
+        widgets.set(action.key, widget);
+        return { ...state, widgets };
+      case "setListenerEffect":
+        return { ...state, listenerEffect: action.value };
       default:
         return state;
     }

@@ -3,7 +3,7 @@ import { toTermQueries } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
 export default function({ fields, id, initialValue }) {
-  const [{ results }, dispatch] = useSharedContext();
+  const [{ widgets }, dispatch] = useSharedContext();
   // Current filter (search inside facet value).
   const [filterValue, setFilterValue] = useState("");
   // Number of itemns displayed in facet.
@@ -11,26 +11,26 @@ export default function({ fields, id, initialValue }) {
   // The actual selected items in facet.
   const [selectedInputs, setSelectedInputs] = useState(initialValue || []);
   // Data from internal queries (Elasticsearch queries are performed via Listener)
-  const data = results.get(id) ? results.get(id).data : [];
+  const widget = widgets.get(id);
+  const data = widget && widget.result && widget.result.data ? widget.result.data : [];
+  const total = widget && widget.result && widget.result.total ? widget.result.total : 0;
 
-  // Update Component configuration (in order to change context) on change 
+  // Update Component configuration (in order to change context) on change
   // (see Component properties below).
   useEffect(() => {
-    dispatch({ type: "setConfiguration", key: id, size, filterValue });
-    dispatch({ type: "setFacetComponents", key: id });
-    dispatch({ type: "setConfigurableComponents", key: id });
-    dispatch({ type: "setSearchComponents", key: id });
-  }, [size, filterValue]);
-
-  // Update external query on mount.
-  useEffect(() => {
     dispatch({
-      type: "setQuery",
+      type: "setWidget",
       key: id,
+      needsQuery: true,
+      needsConfiguration: true,
+      isFacet: true,
+      wantResults: false,
       query: { bool: { should: toTermQueries(fields, selectedInputs) } },
-      value: selectedInputs
+      value: selectedInputs,
+      configuration: { size, filterValue },
+      result: data && total ? { data, total } : null
     });
-  }, []);
+  }, [size, filterValue, selectedInputs]);
 
   return (
     <div className="react-es-facet">
@@ -53,15 +53,6 @@ export default function({ fields, id, initialValue }) {
                 ? [...new Set([...selectedInputs, item.key])]
                 : selectedInputs.filter(f => f !== item.key);
               setSelectedInputs(newSelectedInputs);
-              // Update external queries.
-              dispatch({
-                type: "setQuery",
-                key: id,
-                query: {
-                  bool: { should: toTermQueries(fields, newSelectedInputs) }
-                },
-                value: newSelectedInputs
-              });
             }}
           />
           {item.key} ({item.doc_count})

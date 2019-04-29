@@ -4,25 +4,26 @@ import { msearch, queryFrom, defer } from "./utils";
 
 // This component needs to be cleaned.
 export default function({ children, onChange }) {
-  const [
-    {
-      queries,
-      url,
-      configurations,
-      values,
-      resultComponents,
-      searchComponents,
-      configurableComponents,
-      facetComponents,
-      bigThing
-    },
-    dispatch
-  ] = useSharedContext();
+  const [{ url, listenerEffect, widgets }, dispatch] = useSharedContext();
+
+  function onlyWidget(callback) {
+    return new Map([...widgets].filter(callback));
+  }
+
+  const queries = new Map([...widgets].filter(([, v]) => v.query).map(([k, v]) => [k, v.query]));
+  const configurations = new Map(
+    [...widgets].filter(([, v]) => v.configuration).map(([k, v]) => [k, v.configuration])
+  );
+  const searchComponents = onlyWidget(([, v]) => v.needsQuery);
+  const resultComponents = onlyWidget(([, v]) => v.wantResults);
+  const values = onlyWidget(([, v]) => v.value);
+  const configurableComponents = onlyWidget(([, v]) => v.needsConfiguration);
+  const facetComponents = onlyWidget(([, v]) => v.isFacet);
 
   // Apply callback effect on every change, useful for query params.
   useEffect(() => {
     onChange && onChange(values);
-    bigThing && bigThing();
+    listenerEffect && listenerEffect();
   });
 
   // Run effect on update for each change in queries or configuration.
@@ -33,7 +34,7 @@ export default function({ children, onChange }) {
     if (queriesReady && configurationsReady) {
       defer(() => {
         dispatch({
-          type: "setBigThing",
+          type: "setListenerEffect",
           value: () => {
             const msearchData = [];
             // If you are debugging and your debug path leads you here, you might
@@ -41,8 +42,9 @@ export default function({ children, onChange }) {
             // the whole list of components that are configurables and queryable.
             // On other hand, each configurable must dispacth a setConfiguration
             // type in a useEffect function.
-            resultComponents.forEach(r => {
-              const { itemsPerPage, page } = configurations.get(r);
+            console.log("resultComponents", resultComponents);
+            resultComponents.forEach((r, id) => {
+              const { itemsPerPage, page } = r.configuration;
               msearchData.push({
                 query: {
                   query: queryFrom(queries),
@@ -51,17 +53,15 @@ export default function({ children, onChange }) {
                 },
                 data: result => result.hits.hits,
                 total: result => result.hits.total,
-                id: r
+                id
               });
             });
 
             // Fetch data for internal facet components.
-            facetComponents.forEach(f => {
-              // const { id, fields } = f.props;
-              const id = f;
+            facetComponents.forEach((f, id) => {
               const fields = ["AUTR.keyword"];
-              const size = configurations.get(id).size;
-              const filterValue = configurations.get(id).filterValue;
+              const size = f.configuration.size;
+              const filterValue = f.configuration.filterValue;
 
               // Get the aggs (elasticsearch queries) from fields
               // Dirtiest part, because we build a raw query from various params
@@ -96,18 +96,21 @@ export default function({ children, onChange }) {
             });
 
             async function fetchData() {
-              const result = await msearch(url, msearchData);
-              result.responses.forEach((response, key) => {
-                dispatch({
-                  type: "setResult",
-                  key: msearchData[key].id,
-                  data: msearchData[key].data(response),
-                  total: msearchData[key].total(response)
+              if (msearchData.length) {
+                const result = await msearch(url, msearchData);
+                result.responses.forEach((response, key) => {
+                  const widget = widgets.get(msearchData[key].id);
+                  widget.result = {
+                    data: msearchData[key].data(response),
+                    total: msearchData[key].total(response)
+                  };
+                  console.log("widget", widget);
+                  dispatch({ type: "setWidget", key: msearchData[key].id, ...widget });
                 });
-              });
+              }
             }
             fetchData();
-            dispatch({ type: "setBigThing", value: null });
+            dispatch({ type: "setListenerEffect", value: null });
           }
         });
       });
