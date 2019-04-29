@@ -27,7 +27,7 @@ export default function({ fields, id, initialValue }) {
       wantResults: false,
       query: { bool: { should: toTermQueries(fields, selectedInputs) } },
       value: selectedInputs,
-      configuration: { size, filterValue },
+      configuration: { size, filterValue, fields },
       result: data && total ? { data, total } : null
     });
   }, [size, filterValue, selectedInputs]);

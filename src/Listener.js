@@ -16,7 +16,9 @@ export default function({ children, onChange }) {
   );
   const searchComponents = onlyWidget(([, v]) => v.needsQuery);
   const resultComponents = onlyWidget(([, v]) => v.wantResults);
-  const values = onlyWidget(([, v]) => v.value);
+  const values = new Map(
+    [...widgets].filter(([, v]) => v.value).map(([k, v]) => [k, v.value])
+  );
   const configurableComponents = onlyWidget(([, v]) => v.needsConfiguration);
   const facetComponents = onlyWidget(([, v]) => v.isFacet);
 
@@ -59,7 +61,7 @@ export default function({ children, onChange }) {
 
             // Fetch data for internal facet components.
             facetComponents.forEach((f, id) => {
-              const fields = ["AUTR.keyword"];
+              const fields = f.configuration.fields;
               const size = f.configuration.size;
               const filterValue = f.configuration.filterValue;
 
