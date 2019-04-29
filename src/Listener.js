@@ -97,6 +97,8 @@ export default function({ children, onChange }) {
           });
           return { query: queryFrom(withoutOwnQueries()), size: 0, aggs: result };
         }
+
+        //TODO @Raph -> C'est beau mais c'est pas hyper clair
         msearchData.push({
           query: aggsFromFields(),
           data: result => result.aggregations[fields[0]].buckets,
@@ -107,6 +109,10 @@ export default function({ children, onChange }) {
 
       async function fetchData() {
         const result = await msearch(url, msearchData);
+        if (result.status !== 200) {
+          console.log("result", result.message);
+          return;
+        }
         result.responses.forEach((response, key) => {
           dispatch({
             type: "setResult",

@@ -5,12 +5,23 @@ import qs from "qs";
 // Todo reject.
 export function msearch(url, msearchData) {
   return new Promise(async (resolve, reject) => {
-    const headers = { Accept: "application/json", "Content-Type": "application/x-ndjson" };
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/x-ndjson",
+      Authorization: "Basic Qq38oEj7D:a23804f8-f0c4-4dea-9a55-67739275e588"
+    };
     const body = msearchData.reduce((acc, val) => {
       const [p, q] = [{ preference: val.id }, val.query].map(JSON.stringify);
       return `${acc}${p}\n${q}\n`;
     }, "");
-    const rawResponse = await fetch(`${url}/_msearch`, { method: "POST", headers, body });
+
+    console.log("`${url}/_msearch`", `${url}/_search`);
+    const rawResponse = await fetch(`${url}/_search`, {
+      method: "POST",
+      headers,
+      body,
+      credentials: "include"
+    });
     const response = await rawResponse.json();
     resolve(response);
   });
