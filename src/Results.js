@@ -18,6 +18,9 @@ export default function({ itemsPerPage, pagination, stats, item, id }) {
   // Update context with page (and itemsPerPage)
   useEffect(() => {
     dispatch({ type: "setConfiguration", key: id, itemsPerPage, page });
+    dispatch({ type: "setResultComponents", key: id });
+    dispatch({ type: "setConfigurableComponents", key: id });
+
   }, [page]);
 
   const defaultPagination = () => (

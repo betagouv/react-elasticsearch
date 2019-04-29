@@ -1,6 +1,7 @@
 import React from "react";
 import { SharedContextProvider } from "./SharedContextProvider";
 import Listener from "./Listener";
+import { defer } from "./utils";
 
 // Main component. See storybook for usage.
 export default function({ children, url, onChange }) {
@@ -20,12 +21,35 @@ export default function({ children, url, onChange }) {
     // Values of components, like "my search phrase"
     values: new Map(),
     // The URL of the component
-    url
+    url,
+    searchComponents: new Map(),
+    resultComponents: new Map(),
+    facetComponents: new Map(),
+    configurableComponents: new Map(),
+    bigThing: null,
   };
 
   const reducer = (state, action) => {
     // See description above.
     switch (action.type) {
+      case "setBigThing":
+        return { ...state, bigThing: action.value };
+      case "setSearchComponents":
+        const { searchComponents } = state;
+        searchComponents.set(action.key, action.key);
+        return { ...state, searchComponents };
+      case "setResultComponents":
+        const { resultComponents } = state;
+        resultComponents.set(action.key, action.key);
+        return { ...state, resultComponents };
+      case "setFacetComponents":
+        const { facetComponents } = state;
+        facetComponents.set(action.key, action.key);
+        return { ...state, facetComponents };
+      case "setConfigurableComponents":
+        const { configurableComponents } = state;
+        configurableComponents.set(action.key, action.key);
+        return { ...state, configurableComponents };
       case "setQuery":
         const { queries, values } = state;
         queries.set(action.key, action.query);

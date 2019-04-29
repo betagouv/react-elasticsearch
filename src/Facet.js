@@ -17,6 +17,9 @@ export default function({ fields, id, initialValue }) {
   // (see Component properties below).
   useEffect(() => {
     dispatch({ type: "setConfiguration", key: id, size, filterValue });
+    dispatch({ type: "setFacetComponents", key: id });
+    dispatch({ type: "setConfigurableComponents", key: id });
+    dispatch({ type: "setSearchComponents", key: id });
   }, [size, filterValue]);
 
   // Update external query on mount.

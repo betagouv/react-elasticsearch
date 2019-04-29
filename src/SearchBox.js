@@ -23,6 +23,7 @@ export default function({ customQuery, fields, id, initialValue }) {
   function update(v) {
     setValue(v);
     dispatch({ type: "setQuery", key: id, query: queryFromValue(v), value: v });
+    dispatch({ type: "setSearchComponents", key: id });
   }
 
   return (
