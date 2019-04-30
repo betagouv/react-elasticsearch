@@ -24,7 +24,14 @@ export default function({ children, onChange }) {
 
   useEffect(() => {
     // Apply custom callback effect on every change, useful for query params.
-    onChange && onChange(values);
+    if (onChange) {
+      // Add pages to params.
+      const pages = [...configurations]
+        .filter(([, v]) => v.page && v.page > 1)
+        .map(([k, v]) => [`${k}Page`, v.page]);
+      // Run the change callback with all params.
+      onChange(new Map([...pages, ...values]));
+    }
     // Run the deferred (thx algolia) listener effect.
     listenerEffect && listenerEffect();
   });
@@ -37,7 +44,7 @@ export default function({ children, onChange }) {
     const queriesReady = queries.size === searchWidgets.size;
     const configurationsReady = configurations.size === configurableWidgets.size;
     if (queriesReady && configurationsReady) {
-      // The actual query to ES is deffered, to wait for all effects 
+      // The actual query to ES is deffered, to wait for all effects
       // and context operations before running.
       defer(() => {
         dispatch({

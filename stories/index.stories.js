@@ -14,7 +14,8 @@ import { customQuery, url } from "./utils";
 function WithUrlParams() {
   const [queryString, setQueryString] = useState("");
 
-  const initialValues = fromUrlQueryString("main=%22hell%22");
+  const initialValues = fromUrlQueryString("main=%22h%22&resultPage=2");
+  console.log(initialValues.get("resultPage"))
   return (
     <Elasticsearch url={url} onChange={values => { 
       setQueryString(toUrlQueryString(values));
@@ -23,7 +24,7 @@ function WithUrlParams() {
       <SearchBox id="main" customQuery={customQuery} initialValue={initialValues.get("main")} />
       <hr />
       <Facet id="author" fields={["AUTR.keyword"]} />
-      <Results id="result" item={(s, _s, id) => <div key={id}>{s.TICO}</div>} />
+      <Results id="result" initialPage={initialValues.get("resultPage")} item={(s, _s, id) => <div key={id}>{s.TICO}</div>} />
     </Elasticsearch>
   );
 }
