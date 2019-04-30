@@ -3,9 +3,12 @@ import qs from "qs";
 
 // Search with msearch to elasticsearch instance
 // Todo reject.
-export function msearch(url, msearchData) {
+export function msearch(url, msearchData, headers = {}) {
   return new Promise(async (resolve, reject) => {
-    const headers = { Accept: "application/json", "Content-Type": "application/x-ndjson" };
+    headers = {
+      ...{ Accept: "application/json", "Content-Type": "application/x-ndjson" },
+      ...headers
+    };
     const body = msearchData.reduce((acc, val) => {
       const [p, q] = [{ preference: val.id }, val.query].map(JSON.stringify);
       return `${acc}${p}\n${q}\n`;

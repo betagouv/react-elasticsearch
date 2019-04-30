@@ -3,7 +3,7 @@ import { SharedContextProvider } from "./SharedContextProvider";
 import Listener from "./Listener";
 
 // Main component. See storybook for usage.
-export default function({ children, url, onChange }) {
+export default function({ children, url, onChange, headers }) {
   const initialState = { url, listenerEffect: null, widgets: new Map() };
 
   const reducer = (state, action) => {
@@ -34,7 +34,9 @@ export default function({ children, url, onChange }) {
 
   return (
     <SharedContextProvider initialState={initialState} reducer={reducer}>
-      <Listener onChange={onChange}>{children}</Listener>
+      <Listener onChange={onChange} headers={headers}>
+        {children}
+      </Listener>
     </SharedContextProvider>
   );
 }

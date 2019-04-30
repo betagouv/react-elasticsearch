@@ -3,7 +3,7 @@ import { useSharedContext } from "./SharedContextProvider";
 import { msearch, queryFrom, defer } from "./utils";
 
 // This component needs to be cleaned.
-export default function({ children, onChange }) {
+export default function({ children, onChange, headers }) {
   const [{ url, listenerEffect, widgets }, dispatch] = useSharedContext();
 
   // We need to prepare some data in each render.
@@ -107,7 +107,7 @@ export default function({ children, onChange }) {
             async function fetchData() {
               // Only if there is a query to run.
               if (msearchData.length) {
-                const result = await msearch(url, msearchData);
+                const result = await msearch(url, msearchData, headers);
                 result.responses.forEach((response, key) => {
                   const widget = widgets.get(msearchData[key].id);
                   widget.result = {
