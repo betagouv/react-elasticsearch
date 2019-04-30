@@ -5,6 +5,7 @@ import Facet from "./Facet";
 import Pagination from "./Pagination";
 import Listener from "./Listener";
 import ActiveFilters from "./ActiveFilters";
+import QueryBuilder from "./QueryBuilder/QueryBuilder";
 import { fromUrlQueryString, toUrlQueryString } from "./utils";
 
 export {
@@ -16,5 +17,6 @@ export {
   Listener,
   fromUrlQueryString,
   toUrlQueryString,
-  ActiveFilters
+  ActiveFilters,
+  QueryBuilder
 };
