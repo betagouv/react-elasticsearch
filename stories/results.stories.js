@@ -43,4 +43,21 @@ storiesOf("Results", module)
         />
       </Elasticsearch>
     );
+  })
+  .add("sortable (DMIS desc)", () => {
+    return (
+      <Elasticsearch url={url}>
+      <h1>Sorted by DMIS</h1>
+      <pre>{`<Results id="x" sort={[{ "DMIS.keyword": { order: "desc" } }]} />`}</pre>
+        <Results
+          id="result"
+          sort={[{ "DMIS.keyword": { order: "desc" } }]}
+          item={source => (
+            <div>
+              {source.DMIS} - {source.TICO.substr(0, 50)}
+            </div>
+          )}
+        />
+      </Elasticsearch>
+    );
   });

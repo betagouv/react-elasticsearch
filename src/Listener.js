@@ -52,12 +52,13 @@ export default function({ children, onChange, headers }) {
           value: () => {
             const msearchData = [];
             resultWidgets.forEach((r, id) => {
-              const { itemsPerPage, page } = r.configuration;
+              const { itemsPerPage, page, sort } = r.configuration;
               msearchData.push({
                 query: {
                   query: queryFrom(queries),
                   size: itemsPerPage,
-                  from: (page - 1) * itemsPerPage
+                  from: (page - 1) * itemsPerPage,
+                  sort
                 },
                 data: result => result.hits.hits,
                 total: result => result.hits.total,
