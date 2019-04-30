@@ -11,24 +11,6 @@ import {
 } from "../src";
 import { customQuery, url } from "./utils";
 
-function WithUrlParams() {
-  const [queryString, setQueryString] = useState("");
-
-  const initialValues = fromUrlQueryString("main=%22h%22&resultPage=2");
-  console.log(initialValues.get("resultPage"))
-  return (
-    <Elasticsearch url={url} onChange={values => { 
-      setQueryString(toUrlQueryString(values));
-    }}>
-      <div>Params: {queryString}</div>
-      <SearchBox id="main" customQuery={customQuery} initialValue={initialValues.get("main")} />
-      <hr />
-      <Facet id="author" fields={["AUTR.keyword"]} />
-      <Results id="result" initialPage={initialValues.get("resultPage")} item={(s, _s, id) => <div key={id}>{s.TICO}</div>} />
-    </Elasticsearch>
-  );
-}
-
 storiesOf("Elasticsearch", module)
   .add("basic usage", () => {
     return (
@@ -52,3 +34,20 @@ storiesOf("Elasticsearch", module)
     );
   })
   .add("with url params", () => <WithUrlParams />);
+
+  function WithUrlParams() {
+    const [queryString, setQueryString] = useState("");
+  
+    const initialValues = fromUrlQueryString("main=%22h%22&resultPage=2");
+    return (
+      <Elasticsearch url={url} onChange={values => { 
+        setQueryString(toUrlQueryString(values));
+      }}>
+        <div>Params: {queryString}</div>
+        <SearchBox id="main" customQuery={customQuery} initialValue={initialValues.get("main")} />
+        <hr />
+        <Facet id="author" fields={["AUTR.keyword"]} />
+        <Results id="result" initialPage={initialValues.get("resultPage")} item={(s, _s, id) => <div key={id}>{s.TICO}</div>} />
+      </Elasticsearch>
+    );
+  }

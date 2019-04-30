@@ -3,7 +3,7 @@ import { useSharedContext } from "../SharedContextProvider";
 import { defaultOperators, defaultCombinators, mergedQueries, ruleQuery } from "./utils";
 import Rule from "./Rule";
 
-export default function QueryBuilder({ fields, operators, combinators, templateRule, id }) {
+export default function QueryBuilder({ fields, operators, combinators, templateRule, initialValue, id }) {
   const [{}, dispatch] = useSharedContext();
   operators = operators || defaultOperators;
   combinators = combinators || defaultCombinators;
@@ -14,10 +14,12 @@ export default function QueryBuilder({ fields, operators, combinators, templateR
     combinator: "AND",
     index: 0
   };
-  const [rules, setRules] = useState([templateRule]);
+  const [rules, setRules] = useState(initialValue || [templateRule]);
 
   useEffect(() => {
-    const queries = mergedQueries(rules.map(r => ({...r, query: ruleQuery(r.field, r.operator, r.value)}) ));
+    const queries = mergedQueries(
+      rules.map(r => ({ ...r, query: ruleQuery(r.field, r.operator, r.value) }))
+    );
     dispatch({
       type: "setWidget",
       key: id,
@@ -26,7 +28,7 @@ export default function QueryBuilder({ fields, operators, combinators, templateR
       isFacet: false,
       wantResults: false,
       query: { bool: queries },
-      value: rules[0].value,
+      value: rules,
       configuration: null,
       result: null
     });
