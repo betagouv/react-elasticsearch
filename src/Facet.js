@@ -9,13 +9,13 @@ export default function({ fields, id, initialValue }) {
   // Number of itemns displayed in facet.
   const [size, setSize] = useState(5);
   // The actual selected items in facet.
-  const [selectedInputs, setSelectedInputs] = useState(initialValue || []);
+  const [value, setValue] = useState(initialValue || []);
   // Data from internal queries (Elasticsearch queries are performed via Listener)
   const { result } = widgets.get(id) || {};
   const data = (result && result.data) || [];
   const total = (result && result.total) || 0;
 
-  // Update Widget properties (in order to change context) on change.
+  // Update widgets properties on state change.
   useEffect(() => {
     dispatch({
       type: "setWidget",
@@ -24,15 +24,26 @@ export default function({ fields, id, initialValue }) {
       needsConfiguration: true,
       isFacet: true,
       wantResults: false,
-      query: { bool: { should: toTermQueries(fields, selectedInputs) } },
-      value: selectedInputs,
+      query: { bool: { should: toTermQueries(fields, value) } },
+      value,
       configuration: { size, filterValue, fields },
       result: data && total ? { data, total } : null
     });
-  }, [size, filterValue, selectedInputs]);
+  }, [size, filterValue, value]);
+
+  // If widget value was updated elsewhere (ex: from active filters deletion)
+  // We have to update and dispatch the component.
+  useEffect(() => {
+    widgets.get(id) && setValue(widgets.get(id).value);
+  }, [isValueReady()]);
 
   // Destroy widget from context (remove from the list to unapply its effects)
   useEffect(() => () => dispatch({ type: "deleteWidget", key: id }), []);
+
+  // Checks if widget value is the same as actual value.
+  function isValueReady() {
+    return !widgets.get(id) || widgets.get(id).value == value;
+  }
 
   return (
     <div className="react-es-facet">
@@ -48,13 +59,13 @@ export default function({ fields, id, initialValue }) {
           <br />
           <input
             type="checkbox"
-            checked={selectedInputs.includes(item.key)}
+            checked={value.includes(item.key)}
             onChange={e => {
               // On checkbox status change, add or remove current agg to selected
-              const newSelectedInputs = e.target.checked
-                ? [...new Set([...selectedInputs, item.key])]
-                : selectedInputs.filter(f => f !== item.key);
-              setSelectedInputs(newSelectedInputs);
+              const newValue = e.target.checked
+                ? [...new Set([...value, item.key])]
+                : value.filter(f => f !== item.key);
+              setValue(newValue);
             }}
           />
           {item.key} ({item.doc_count})
