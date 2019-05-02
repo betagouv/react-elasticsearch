@@ -1,0 +1,28 @@
+.react-es-active-filters > ul > li,
+.react-es-facet {
+  background-color: #fafafa;
+  margin: 5px 7px 5px 0;
+  padding: 5px 7px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  box-shadow: 1px 2px 2px 0 rgba(197, 197, 197, 0.5);
+}
+.react-es-active-filters > ul {
+  list-style: none;
+  padding: 0;
+}
+.react-es-active-filters > ul > li {
+  display: inline;
+}
+.react-es-active-filters > ul > li > button {
+  margin-left: 5px;
+}
+.react-es-facet {
+  max-width: 300px;
+}
+.react-es-facet input[type="text"] {
+  width: 100%;
+}
+.react-es-facet > label {
+  display: block;
+}

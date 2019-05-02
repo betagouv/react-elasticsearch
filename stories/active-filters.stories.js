@@ -2,6 +2,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { Elasticsearch, SearchBox, Results, ActiveFilters, Facet } from "../src";
 import { url } from "./utils";
+import "../src/style.css";
 
 storiesOf("ActiveFilters", module)
   .add("active", () => {

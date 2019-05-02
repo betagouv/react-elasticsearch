@@ -22,7 +22,7 @@ export default function({ item }) {
     .map(([k, v]) => {
       return (
         <li key={k}>
-          {item ? item(k, v) : `${k} - ${v}`}
+          {item ? item(k, v) : <span>{`${k}: ${v}`}</span>}
           <button onClick={() => removeFilter(k)}>
             x
           </button>

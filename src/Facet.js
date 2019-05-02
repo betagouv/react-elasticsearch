@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toTermQueries } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function({ fields, id, initialValue, seeMore }) {
+export default function({ fields, id, initialValue, seeMore, placeholder, showFilter = true }) {
   const [{ widgets }, dispatch] = useSharedContext();
   // Current filter (search inside facet value).
   const [filterValue, setFilterValue] = useState("");
@@ -47,13 +47,16 @@ export default function({ fields, id, initialValue, seeMore }) {
 
   return (
     <div className="react-es-facet">
-      <input
-        value={filterValue}
-        placeholder="Filter facet"
-        onChange={e => {
-          setFilterValue(e.target.value);
-        }}
-      />
+      {showFilter ? (
+        <input
+          value={filterValue}
+          placeholder={placeholder || "filter…"}
+          type="text"
+          onChange={e => {
+            setFilterValue(e.target.value);
+          }}
+        />
+      ) : null}
       {data.map(item => (
         <label key={item.key}>
           <input

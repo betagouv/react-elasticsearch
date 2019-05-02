@@ -29,8 +29,8 @@ function CollapsableFacet({ initialCollapsed, title, ...rest }) {
   );
 }
 
-storiesOf("Collapsable Facet", module)
-  .add("active", () => {
+storiesOf("Facet", module)
+  .add("collapsable", () => {
     return (
       <Elasticsearch url={url}>
         <SearchBox id="main" fields={["TICO"]} />
@@ -47,10 +47,10 @@ storiesOf("Collapsable Facet", module)
       </Elasticsearch>
     );
   })
-  .add('change "see more" text', () => {
+  .add('customized', () => {
     return (
       <Elasticsearch url={url}>
-        <Facet seeMore="SEE MORE CUSTOM" id="autr" fields={["AUTR.keyword"]} />
+        <Facet seeMore="SEE MORE CUSTOM" placeholder="MY PLACEHOLDER" id="autr" fields={["AUTR.keyword"]} />
         <Results
           id="result"
           item={(source, score, id) => (

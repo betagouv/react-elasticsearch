@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function({ customQuery, fields, id, initialValue }) {
+export default function({ customQuery, fields, id, initialValue, placeholder }) {
   const [{ widgets }, dispatch] = useSharedContext();
   const [value, setValue] = useState(initialValue || "");
 
@@ -52,7 +52,12 @@ export default function({ customQuery, fields, id, initialValue }) {
 
   return (
     <div className="react-es-searchbox">
-      <input type="text" value={value} onChange={e => update(e.target.value)} />
+      <input
+        type="text"
+        value={value}
+        onChange={e => update(e.target.value)}
+        placeholder={placeholder || "search…"}
+      />
     </div>
   );
 }
