@@ -32,7 +32,7 @@ export default function({ itemsPerPage, initialPage = 1, pagination, stats, item
       configuration: { itemsPerPage, page, sort },
       result: data && total ? { data, total } : null
     });
-  }, [page]);
+  }, [page, sort]);
 
   const defaultPagination = () => (
     <Pagination onChange={p => setPage(p)} total={total} itemsPerPage={itemsPerPage} page={page} />
