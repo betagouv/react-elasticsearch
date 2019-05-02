@@ -35,7 +35,7 @@ export default function QueryBuilder({ fields, operators, combinators, templateR
   }, [JSON.stringify(rules)]);
 
   return (
-    <div>
+    <div className="react-es-query-builder">
       {rules.map(rule => (
         <Rule
           combinator={rule.combinator}

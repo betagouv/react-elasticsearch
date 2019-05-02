@@ -11,7 +11,11 @@ export default function Rule({ fields, operators, combinators, ...props }) {
   }, [field, operator, value, combinator]);
 
   const combinatorElement = props.index ? (
-    <select value={combinator.value} onChange={e => setCombinator(e.target.value)}>
+    <select
+      className="react-es-rule-combinator"
+      value={combinator.value}
+      onChange={e => setCombinator(e.target.value)}
+    >
       {combinators.map(c => (
         <option key={c.value} value={c.value}>
           {c.text}
@@ -21,13 +25,19 @@ export default function Rule({ fields, operators, combinators, ...props }) {
   ) : null;
 
   const deleteButton = props.index ? (
-    <button onClick={() => props.onDelete(props.index)}>Delete</button>
+    <button className="react-es-rule-delete" onClick={() => props.onDelete(props.index)}>
+      x
+    </button>
   ) : null;
 
   return (
-    <div>
+    <div className="react-es-rule">
       {combinatorElement}
-      <select value={field.value} onChange={e => setField(e.target.value)}>
+      <select
+        className="react-es-rule-field"
+        value={field.value}
+        onChange={e => setField(e.target.value)}
+      >
         {fields.map(f => {
           return (
             <option key={f.value} value={f.value}>
@@ -36,7 +46,11 @@ export default function Rule({ fields, operators, combinators, ...props }) {
           );
         })}
       </select>
-      <select value={operator.value} onChange={e => setOperator(e.target.value)}>
+      <select
+        className="react-es-rule-operator"
+        value={operator.value}
+        onChange={e => setOperator(e.target.value)}
+      >
         {operators.map(o => {
           return (
             <option key={o.value} value={o.value}>
@@ -45,8 +59,14 @@ export default function Rule({ fields, operators, combinators, ...props }) {
           );
         })}
       </select>
-      <input value={value} onChange={e => setValue(e.target.value)} />
-      <button onClick={props.onAdd}>Add</button>
+      <input
+        className="react-es-rule-value"
+        value={value}
+        onChange={e => setValue(e.target.value)}
+      />
+      <button className="react-es-rule-add" onClick={props.onAdd}>
+        +
+      </button>
       {deleteButton}
     </div>
   );

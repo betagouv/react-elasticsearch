@@ -23,7 +23,9 @@ export default function({ item }) {
       return (
         <li key={k}>
           {item ? item(k, v) : `${k} - ${v}`}
-          <button onClick={() => removeFilter(k)}>delete</button>
+          <button onClick={() => removeFilter(k)}>
+            x
+          </button>
         </li>
       );
     });

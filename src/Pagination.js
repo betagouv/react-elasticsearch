@@ -22,7 +22,7 @@ export default function({ onChange, total, itemsPerPage, page }) {
   return (
     <ul className="react-es-pagination">
       {buttons(page, max)
-        .filter(e => e <= max)
+        .filter(e => Number.isInteger(e) ? e <= max : e)
         .map(i => {
           if (Number.isInteger(i)) {
             return (
@@ -31,7 +31,7 @@ export default function({ onChange, total, itemsPerPage, page }) {
               </li>
             );
           }
-          return <li key={i}>...</li>;
+          return <li key={i}>…</li>;
         })}
     </ul>
   );

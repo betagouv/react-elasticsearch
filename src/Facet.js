@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toTermQueries } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function({ fields, id, initialValue }) {
+export default function({ fields, id, initialValue, seeMore }) {
   const [{ widgets }, dispatch] = useSharedContext();
   // Current filter (search inside facet value).
   const [filterValue, setFilterValue] = useState("");
@@ -56,7 +56,6 @@ export default function({ fields, id, initialValue }) {
       />
       {data.map(item => (
         <label key={item.key}>
-          <br />
           <input
             type="checkbox"
             checked={value.includes(item.key)}
@@ -71,7 +70,9 @@ export default function({ fields, id, initialValue }) {
           {item.key} ({item.doc_count})
         </label>
       ))}
-      {data.length === size ? <button onClick={() => setSize(size + 5)}>Voir plus</button> : null}
+      {data.length === size ? (
+        <button onClick={() => setSize(size + 5)}>{seeMore || "see more"}</button>
+      ) : null}
     </div>
   );
 }

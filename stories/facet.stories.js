@@ -16,29 +16,49 @@ function CollapsableFacet({ initialCollapsed, title, ...rest }) {
     <div>
       <div>
         {title}
-        <button onClick={() => {
-          setCollapsed(!collapsed)
-        }}>open</button>
+        <button
+          onClick={() => {
+            setCollapsed(!collapsed);
+          }}
+        >
+          open
+        </button>
       </div>
       {FacetWrapper()}
     </div>
   );
 }
 
-storiesOf("Collapsable Facet", module).add("active", () => {
-  return (
-    <Elasticsearch url={url}>
-      <SearchBox id="main" fields={["TICO"]} />
-      <CollapsableFacet id="autr" fields={["AUTR.keyword"]} />
-      <Results
-        id="result"
-        item={(s, _t, id) => (
-          <div key={id}>
-            {s.TICO} - {s.AUTR}
-          </div>
-        )}
-        pagination={() => <></>}
-      />
-    </Elasticsearch>
-  );
-});
+storiesOf("Collapsable Facet", module)
+  .add("active", () => {
+    return (
+      <Elasticsearch url={url}>
+        <SearchBox id="main" fields={["TICO"]} />
+        <CollapsableFacet id="autr" fields={["AUTR.keyword"]} />
+        <Results
+          id="result"
+          item={(s, _t, id) => (
+            <div key={id}>
+              {s.TICO} - {s.AUTR}
+            </div>
+          )}
+          pagination={() => <></>}
+        />
+      </Elasticsearch>
+    );
+  })
+  .add('change "see more" text', () => {
+    return (
+      <Elasticsearch url={url}>
+        <Facet seeMore="SEE MORE CUSTOM" id="autr" fields={["AUTR.keyword"]} />
+        <Results
+          id="result"
+          item={(source, score, id) => (
+            <div key={id}>
+              <b>{source.TICO}</b> - score: {score}
+            </div>
+          )}
+        />
+      </Elasticsearch>
+    );
+  });
