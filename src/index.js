@@ -6,6 +6,7 @@ import Pagination from "./Pagination";
 import Listener from "./Listener";
 import ActiveFilters from "./ActiveFilters";
 import QueryBuilder from "./QueryBuilder/QueryBuilder";
+import CustomWidget from "./CustomWidget";
 import { fromUrlQueryString, toUrlQueryString } from "./utils";
 
 export {
@@ -18,5 +19,6 @@ export {
   fromUrlQueryString,
   toUrlQueryString,
   ActiveFilters,
-  QueryBuilder
+  QueryBuilder,
+  CustomWidget
 };
