@@ -42,7 +42,7 @@ export default function({ itemsPerPage, initialPage = 1, pagination, stats, item
     <div className="react-es-results">
       {stats ? stats(total) : <>{total} results</>}
       {data.map(r => item(r._source, r._score, r._id))}
-      {pagination ? pagination(total, itemsPerPage, page) : defaultPagination()}
+      {pagination ? pagination(total, itemsPerPage, page, setPage) : defaultPagination()}
     </div>
   );
 }
