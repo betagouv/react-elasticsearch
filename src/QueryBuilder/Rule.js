@@ -13,7 +13,7 @@ export default function Rule({ fields, operators, combinators, ...props }) {
   const combinatorElement = props.index ? (
     <select
       className="react-es-rule-combinator"
-      value={combinator.value}
+      value={combinator}
       onChange={e => setCombinator(e.target.value)}
     >
       {combinators.map(c => (
@@ -35,7 +35,7 @@ export default function Rule({ fields, operators, combinators, ...props }) {
       {combinatorElement}
       <select
         className="react-es-rule-field"
-        value={field.value}
+        value={field}
         onChange={e => setField(e.target.value)}
       >
         {fields.map(f => {
@@ -48,7 +48,7 @@ export default function Rule({ fields, operators, combinators, ...props }) {
       </select>
       <select
         className="react-es-rule-operator"
-        value={operator.value}
+        value={operator}
         onChange={e => setOperator(e.target.value)}
       >
         {operators.map(o => {

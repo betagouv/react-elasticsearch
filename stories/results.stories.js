@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from "react";
+import React, { useState, useEffect } from "react";
 import { storiesOf } from "@storybook/react";
 import { Elasticsearch, Results } from "../src";
 import { url } from "./utils";
@@ -52,7 +52,6 @@ function WithSortable() {
   const [sortQuery, setSortQuery] = useState([{ [sortKey]: { order: sortOrder } }]);
 
   useEffect(() => {
-    console.log([{ [sortKey]: { order: sortOrder } }])
     setSortQuery([{ [sortKey]: { order: sortOrder } }]);
   }, [sortKey, sortOrder]);
 
