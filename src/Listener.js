@@ -86,7 +86,7 @@ export default function({ children, onChange, headers }) {
                 function aggFromField(field) {
                   const t = { field, order: { _count: "desc" }, size };
                   if (filterValue) {
-                    t.include = filterValueModifier
+                    t.include = !filterValueModifier
                       ? `.*${filterValue}.*`
                       : filterValueModifier(filterValue);
                   }
