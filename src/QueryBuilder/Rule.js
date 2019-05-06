@@ -30,6 +30,10 @@ export default function Rule({ fields, operators, combinators, ...props }) {
     </button>
   ) : null;
 
+  const input = operators.find(o => o.value === operator && o.useInput) ? (
+    <input className="react-es-rule-value" value={value} onChange={e => setValue(e.target.value)} />
+  ) : null;
+
   return (
     <div className="react-es-rule">
       {combinatorElement}
@@ -59,11 +63,7 @@ export default function Rule({ fields, operators, combinators, ...props }) {
           );
         })}
       </select>
-      <input
-        className="react-es-rule-value"
-        value={value}
-        onChange={e => setValue(e.target.value)}
-      />
+      {input}
       <button className="react-es-rule-add" onClick={props.onAdd}>
         +
       </button>

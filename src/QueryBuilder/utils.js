@@ -70,16 +70,16 @@ export function mergedQueries(queries) {
 }
 
 export const defaultOperators = [
-  { value: "==", text: "equals" },
-  { value: "!=", text: "not equals" },
-  { value: ">=", text: "greater than or equals to" },
-  { value: "<=", text: "lesser than or equals to" },
-  { value: ">", text: "greater than" },
-  { value: "<", text: "lesser than" },
-  { value: "∃", text: "exists" },
-  { value: "!∃", text: "does not exist" },
-  { value: "*", text: "contains" },
-  { value: "^", text: "start with" }
+  { value: "==", text: "equals", useInput: true },
+  { value: "!=", text: "not equals", useInput: true },
+  { value: ">=", text: "greater than or equals to", useInput: true },
+  { value: "<=", text: "lesser than or equals to", useInput: true },
+  { value: ">", text: "greater than", useInput: true },
+  { value: "<", text: "lesser than", useInput: true },
+  { value: "∃", text: "exists", useInput: false },
+  { value: "!∃", text: "does not exist", useInput: false },
+  { value: "*", text: "contains", useInput: true },
+  { value: "^", text: "start with", useInput: true }
 ];
 
 export const defaultCombinators = [{ value: "AND", text: "AND" }, { value: "OR", text: "OR" }];
