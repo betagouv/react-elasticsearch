@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 import { toTermQueries } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function({ fields, id, initialValue, seeMore, placeholder, showFilter = true }) {
+export default function({
+  fields,
+  id,
+  initialValue,
+  seeMore,
+  placeholder,
+  showFilter = true,
+  filterValueModifier
+}) {
   const [{ widgets }, dispatch] = useSharedContext();
   // Current filter (search inside facet value).
   const [filterValue, setFilterValue] = useState("");
@@ -26,7 +34,7 @@ export default function({ fields, id, initialValue, seeMore, placeholder, showFi
       wantResults: false,
       query: { bool: { should: toTermQueries(fields, value) } },
       value,
-      configuration: { size, filterValue, fields },
+      configuration: { size, filterValue, fields, filterValueModifier },
       result: data && total ? { data, total } : null
     });
   }, [size, filterValue, value]);
