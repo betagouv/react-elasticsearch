@@ -5,7 +5,7 @@ import {
   SearchBox,
   Facet,
   Results,
-  Listener,
+  ActiveFilters,
   toUrlQueryString,
   fromUrlQueryString
 } from "../src";
@@ -74,6 +74,7 @@ function WithUrlParams() {
       <SearchBox id="main" fields={["TICO"]}  initialValue={initialValues.get("main")} />
       <hr />
       <Facet id="author" fields={["AUTR.keyword"]} />
+      <ActiveFilters id="af" />
       <Results
         id="result"
         initialPage={initialValues.get("resultPage")}

@@ -4,7 +4,9 @@ import { defaultOperators, defaultCombinators, mergedQueries, ruleQuery } from "
 import Rule from "./Rule";
 
 export default function QueryBuilder({ fields, operators, combinators, templateRule, initialValue, id }) {
-  const [{}, dispatch] = useSharedContext();
+  console.log("a");
+  const [_ignore, dispatch] = useSharedContext();
+  console.log("b");
   operators = operators || defaultOperators;
   combinators = combinators || defaultCombinators;
   templateRule = templateRule || {
@@ -14,9 +16,11 @@ export default function QueryBuilder({ fields, operators, combinators, templateR
     combinator: "AND",
     index: 0
   };
+  console.log("c");
   const [rules, setRules] = useState(initialValue || [templateRule]);
 
   useEffect(() => {
+    console.log("d");
     const queries = mergedQueries(
       rules.map(r => ({ ...r, query: ruleQuery(r.field, r.operator, r.value) }))
     );
