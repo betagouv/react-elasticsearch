@@ -3,8 +3,8 @@ import { useSharedContext } from "./SharedContextProvider";
 import { msearch, queryFrom, defer } from "./utils";
 
 // This component needs to be cleaned.
-export default function({ children, onChange, headers }) {
-  const [{ url, listenerEffect, widgets }, dispatch] = useSharedContext();
+export default function({ children, onChange }) {
+  const [{ url, listenerEffect, widgets, headers }, dispatch] = useSharedContext();
 
   // We need to prepare some data in each render.
   // This needs to be done out of the effect function.

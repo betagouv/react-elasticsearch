@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
+import Autosuggest from "react-autosuggest";
+import { useSharedContext } from "../SharedContextProvider";
+import { msearch } from "../utils";
 
 export default function Rule({ fields, operators, combinators, ...props }) {
+  const [{ url, headers }] = useSharedContext();
   const [combinator, setCombinator] = useState(props.combinator);
   const [field, setField] = useState(props.field);
   const [operator, setOperator] = useState(props.operator);
   const [value, setValue] = useState(props.value);
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     props.onChange({ field, operator, value, combinator, index: props.index });
@@ -30,10 +35,41 @@ export default function Rule({ fields, operators, combinators, ...props }) {
     </button>
   ) : null;
 
-  const input = operators.find(o => o.value === operator && o.useInput) ? (
-    <input className="react-es-rule-value" value={value} onChange={e => setValue(e.target.value)} />
-  ) : null;
-
+  let input = null;
+  if (operators.find(o => o.value === operator && o.useInput)) {
+    // Autocomplete zone.
+    if (props.autoComplete) {
+      input = (
+        <Autosuggest
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={async ({ value }) => {
+            const terms = { field, include: `.*${value}.*`, order: { _count: "desc" }, size: 10 };
+            const query = { query: { match_all: {} }, aggs: { [field]: { terms } }, size: 0 };
+            const suggestions = await msearch(url, [{ query, id: "queryBuilder" }], headers);
+            setSuggestions(suggestions.responses[0].aggregations[field].buckets.map(e => e.key));
+          }}
+          onSuggestionsClearRequested={() => setSuggestions([])}
+          getSuggestionValue={suggestion => suggestion}
+          renderSuggestion={suggestion => <div>{suggestion}</div>}
+          inputProps={{
+            value,
+            onChange: (event, { newValue }) => setValue(newValue),
+            className: "react-es-rule-value",
+            autoComplete: "new-password"
+          }}
+        />
+      );
+    } else {
+      input = (
+        <input
+          className="react-es-rule-value"
+          value={value}
+          autoComplete="new-password"
+          onChange={e => setValue(e.target.value)}
+        />
+      );
+    }
+  }
   return (
     <div className="react-es-rule">
       {combinatorElement}

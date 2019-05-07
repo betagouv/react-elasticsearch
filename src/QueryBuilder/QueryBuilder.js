@@ -3,8 +3,16 @@ import { useSharedContext } from "../SharedContextProvider";
 import { defaultOperators, defaultCombinators, mergedQueries, ruleQuery } from "./utils";
 import Rule from "./Rule";
 
-export default function QueryBuilder({ fields, operators, combinators, templateRule, initialValue, id }) {
-  const [_ignore, dispatch] = useSharedContext();
+export default function QueryBuilder({
+  fields,
+  operators,
+  combinators,
+  templateRule,
+  initialValue,
+  id,
+  autoComplete
+}) {
+  const [, dispatch] = useSharedContext();
   operators = operators || defaultOperators;
   combinators = combinators || defaultCombinators;
   templateRule = templateRule || {
@@ -47,6 +55,7 @@ export default function QueryBuilder({ fields, operators, combinators, templateR
           combinators={combinators}
           key={rule.index}
           index={rule.index}
+          autoComplete={autoComplete}
           onAdd={() => {
             setRules([...rules, { ...templateRule, index: rules.length }]);
           }}

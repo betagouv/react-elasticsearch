@@ -12,6 +12,14 @@ storiesOf("QueryBuilder", module)
       </Elasticsearch>
     );
   })
+  .add("autoComplete", () => {
+    return (
+      <Elasticsearch url={url}>
+        <QueryBuilder id="qb" fields={[{ value: "AUTR.keyword", text: "Author" }]} autoComplete={true} />
+        <Results id="result" item={(s, _s, id) => <div key={id}>{s.TICO}</div>} />
+      </Elasticsearch>
+    );
+  })
   .add("listen changes (with url params)", () => <WithUrlParams />);
 
 function WithUrlParams() {
