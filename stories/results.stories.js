@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { storiesOf } from "@storybook/react";
 import { Elasticsearch, Results } from "../src";
-import { url } from "./utils";
+import { url, headers } from "./utils";
 
 storiesOf("Results", module)
   .add("vanilla", () => {
     return (
-      <Elasticsearch url={url}>
+      <Elasticsearch url={url} headers={headers}>
         <Results
           id="result"
           item={(source, score, id) => (
             <div>
-              <b>{source.TICO}</b> - score: {score} - id: {id}
+              <b>{source.original_title}</b> - score: {score} - id: {id}
             </div>
           )}
         />
@@ -20,10 +20,10 @@ storiesOf("Results", module)
   })
   .add("with custom pagination", () => {
     return (
-      <Elasticsearch url={url}>
+      <Elasticsearch url={url} headers={headers}>
         <Results
           id="result"
-          item={source => <div>{source.TICO}</div>}
+          item={source => <div>{source.original_title}</div>}
           pagination={(total, itemsPerPage, page) => (
             <div style={{ color: "green" }}>
               Total : {total} - ItemsPerPage : {itemsPerPage} - Page: {page} CUSTOM!
@@ -35,10 +35,10 @@ storiesOf("Results", module)
   })
   .add("with custom stats", () => {
     return (
-      <Elasticsearch url={url}>
+      <Elasticsearch url={url} headers={headers}>
         <Results
           id="result"
-          item={source => <div>{source.TICO}</div>}
+          item={source => <div>{source.original_title}</div>}
           stats={total => <div style={{ color: "green" }}>{total} results CUSTOM!</div>}
         />
       </Elasticsearch>
@@ -56,7 +56,7 @@ function WithSortable() {
   }, [sortKey, sortOrder]);
 
   return (
-    <Elasticsearch url={url}>
+    <Elasticsearch url={url} headers={headers}>
       Sort by:{" "}
       <select onChange={e => setSortKey(e.target.value)} value={sortKey}>
         {["AUTR.keyword", "DMIS.keyword", "DMAJ.keyword", "TICO.keyword"].map(e => (
@@ -74,7 +74,7 @@ function WithSortable() {
         sort={sortQuery}
         item={source => (
           <div>
-            {source.DMIS} - {source.TICO.substr(0, 50)}
+            {source.DMIS} - {source.original_title.substr(0, 50)}
           </div>
         )}
       />

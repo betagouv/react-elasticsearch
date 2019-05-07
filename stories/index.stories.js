@@ -14,7 +14,7 @@ import { customQuery, customQueryMovie, url } from "./utils";
 storiesOf("Elasticsearch", module)
   .add("basic usage", () => {
     return (
-      <Elasticsearch url={url}>
+      <Elasticsearch url={url} headers={headers}>
         <SearchBox id="main" customQuery={customQuery} />
         <div style={{ display: "inline-block" }}>
           <Facet id="author" fields={["AUTR.keyword"]} />
@@ -26,7 +26,7 @@ storiesOf("Elasticsearch", module)
           id="result"
           item={(source, score, id) => (
             <div key={id}>
-              <b>{source.TICO}</b> - score: {score}
+              <b>{source.original_title}</b> - score: {score}
             </div>
           )}
         />
@@ -37,10 +37,8 @@ storiesOf("Elasticsearch", module)
   .add("movie database", () => {
     return (
       <Elasticsearch
-        url={"https://scalr.api.appbase.io/react-elasticsearch-films"}
-        headers={{
-          Authorization: "Basic " + window.btoa("Qq38oEj7D:a23804f8-f0c4-4dea-9a55-67739275e588")
-        }}
+        url={url}
+        headers={headers}
       >
         <SearchBox id="main" customQuery={customQueryMovie} />
         <Results
@@ -65,7 +63,7 @@ function WithUrlParams() {
   const initialValues = fromUrlQueryString("main=%22h%22&resultPage=2");
   return (
     <Elasticsearch
-      url={url}
+      url={url} headers={headers}
       onChange={values => {
         setQueryString(toUrlQueryString(values));
       }}

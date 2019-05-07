@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { storiesOf } from "@storybook/react";
 import { Elasticsearch, QueryBuilder, Results, fromUrlQueryString, toUrlQueryString } from "../src";
-import { url } from "./utils";
+import { url, headers } from "./utils";
 
 storiesOf("QueryBuilder", module)
   .add("simple", () => {
     return (
-      <Elasticsearch url={url}>
+      <Elasticsearch url={url} headers={headers}>
         <QueryBuilder id="qb" fields={[{ value: "AUTR.keyword", text: "Author" }]} />
         <Results id="result" item={(s, _s, id) => <div key={id}>{s.TICO}</div>} />
       </Elasticsearch>
@@ -21,7 +21,7 @@ function WithUrlParams() {
   
   return (
     <Elasticsearch
-      url={url}
+      url={url} headers={headers}
       onChange={values => {
         setQueryString(toUrlQueryString(values));
       }}

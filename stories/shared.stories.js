@@ -1,7 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { Elasticsearch, SearchBox, Results, CustomWidget } from "../src";
-import { url } from "./utils";
+import { url, headers } from "./utils";
 
 function MyComponent({ ctx }) {
   let query;
@@ -15,7 +15,7 @@ function MyComponent({ ctx }) {
 
 storiesOf("CustomWidget", module).add("active", () => {
   return (
-    <Elasticsearch url={url}>
+    <Elasticsearch url={url} headers={headers}>
       <SearchBox id="main" fields={["AUTR"]} />
       <CustomWidget>
         <MyComponent />

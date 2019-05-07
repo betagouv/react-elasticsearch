@@ -6,7 +6,7 @@ import { customQuery, url } from "./utils";
 storiesOf("SearchBox", module)
   .add("with default query", () => {
     return (
-      <Elasticsearch url={url}>
+      <Elasticsearch url={url} headers={headers}>
         <h1>Search on AUTR field</h1>
         <pre>{`<SearchBox id="main" fields={["AUTR"]} />`}</pre>
         <SearchBox id="main" fields={["AUTR"]} />
@@ -16,7 +16,7 @@ storiesOf("SearchBox", module)
   })
   .add("with custom query", () => {
     return (
-      <Elasticsearch url={url}>
+      <Elasticsearch url={url} headers={headers}>
         <h1>Search on TICO field with custom query</h1>
         <pre>{`<SearchBox id="main" customQuery={customQuery} />`}</pre>
         <SearchBox id="main" customQuery={customQuery} />

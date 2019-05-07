@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { storiesOf } from "@storybook/react";
 import { Elasticsearch, SearchBox, Results, Facet } from "../src";
-import { url } from "./utils";
+import { url, headers } from "./utils";
 
 function CollapsableFacet({ initialCollapsed, title, ...rest }) {
   const [collapsed, setCollapsed] = useState(true);
@@ -32,7 +32,7 @@ function CollapsableFacet({ initialCollapsed, title, ...rest }) {
 storiesOf("Facet", module)
   .add("collapsable", () => {
     return (
-      <Elasticsearch url={url}>
+      <Elasticsearch url={url} headers={headers}>
         <SearchBox id="main" fields={["TICO"]} />
         <CollapsableFacet id="autr" fields={["AUTR.keyword"]} />
         <Results
@@ -49,7 +49,7 @@ storiesOf("Facet", module)
   })
   .add("customized", () => {
     return (
-      <Elasticsearch url={url}>
+      <Elasticsearch url={url} headers={headers}>
         <Facet
           seeMore="SEE MORE CUSTOM"
           placeholder="MY PLACEHOLDER"
@@ -60,7 +60,7 @@ storiesOf("Facet", module)
           id="result"
           item={(source, score, id) => (
             <div key={id}>
-              <b>{source.TICO}</b> - score: {score}
+              <b>{source.original_title}</b> - score: {score}
             </div>
           )}
         />
@@ -69,7 +69,7 @@ storiesOf("Facet", module)
   })
   .add("modify filter value", () => {
     return (
-      <Elasticsearch url={url}>
+      <Elasticsearch url={url} headers={headers}>
         <Facet
           filterValueModifier={v => `${v}.*`}
           placeholder="type first letters"
@@ -80,7 +80,7 @@ storiesOf("Facet", module)
           id="result"
           item={(source, score, id) => (
             <div key={id}>
-              <b>{source.TICO}</b> - score: {score}
+              <b>{source.original_title}</b> - score: {score}
             </div>
           )}
         />
