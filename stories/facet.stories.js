@@ -55,6 +55,7 @@ storiesOf("Facet", module)
           placeholder="MY PLACEHOLDER"
           id="autr"
           fields={["AUTR.keyword"]}
+          itemsPerBlock={10}
         />
         <Results
           id="result"

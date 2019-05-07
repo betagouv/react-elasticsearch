@@ -9,13 +9,14 @@ export default function({
   seeMore,
   placeholder,
   showFilter = true,
-  filterValueModifier
+  filterValueModifier,
+  itemsPerBlock
 }) {
   const [{ widgets }, dispatch] = useSharedContext();
   // Current filter (search inside facet value).
   const [filterValue, setFilterValue] = useState("");
   // Number of itemns displayed in facet.
-  const [size, setSize] = useState(5);
+  const [size, setSize] = useState(itemsPerBlock || 5);
   // The actual selected items in facet.
   const [value, setValue] = useState(initialValue || []);
   // Data from internal queries (Elasticsearch queries are performed via Listener)
@@ -82,7 +83,7 @@ export default function({
         </label>
       ))}
       {data.length === size ? (
-        <button onClick={() => setSize(size + 5)}>{seeMore || "see more"}</button>
+        <button onClick={() => setSize(size + (itemsPerBlock || 5))}>{seeMore || "see more"}</button>
       ) : null}
     </div>
   );
