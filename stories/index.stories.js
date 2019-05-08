@@ -47,7 +47,27 @@ storiesOf("Elasticsearch", module)
           id="result"
           item={(source, score, id) => (
             <div key={id}>
-              <img src={source.poster_path}></img>
+              <img src={source.poster_path} />
+              <b>
+                {source.original_title} - {source.tagline}
+              </b>{" "}
+              - score: {score}
+            </div>
+          )}
+        />
+      </Elasticsearch>
+    );
+  })
+  .add("try", () => {
+    return (
+      <Elasticsearch url="https://api.postajoboffer.com/esproxy/ticket">
+        <Results
+          stats={() => {}}
+          pagination={() => {}}
+          id="result"
+          item={(source, score, id) => (
+            <div key={id}>
+              <img src={source.poster_path} />
               <b>
                 {source.original_title} - {source.tagline}
               </b>{" "}
@@ -71,7 +91,7 @@ function WithUrlParams() {
       }}
     >
       <div>Params: {queryString}</div>
-      <SearchBox id="main" fields={["TICO"]}  initialValue={initialValues.get("main")} />
+      <SearchBox id="main" fields={["TICO"]} initialValue={initialValues.get("main")} />
       <hr />
       <Facet id="author" fields={["AUTR.keyword"]} />
       <ActiveFilters id="af" />
