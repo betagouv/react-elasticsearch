@@ -18,7 +18,6 @@ export function msearch(url, msearchData, headers = {}) {
     console.log("body", body);
     const rawResponse = await fetch(`${url}/_msearch`, { method: "POST", headers, body });
     const response = await rawResponse.json();
-    console.log("response", response);
     resolve(response);
   });
 }
@@ -31,7 +30,6 @@ export function queryFrom(queries) {
   } else if (queries.length === 1) {
     return queries[0];
   } else {
-
   }
   // return { bool: { must: queries.size === 0 ? { match_all: {} } : Array.from(queries.values()) } };
 }

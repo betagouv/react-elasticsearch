@@ -24,7 +24,7 @@ export default function getSimilarQuery(job, size = 100) {
   // return scoreQuery;
 }
 
-function MyComponent({ ctx, dispatch }) {
+function MyComponent({ ctx, dispatch, updateQuery, onData, onAggr }) {
   const { widgets } = ctx;
   const widget = widgets.get("Similar");
 
@@ -95,7 +95,7 @@ storiesOf("Similar", module)
   .add("test", () => {
     return (
       <Elasticsearch url={url}>
-        <SearchBox id="main" fields={["TICO"]} />
+        {/* <SearchBox id="main" fields={["TICO"]} /> */}
         <Facet
           seeMore="SEE MORE CUSTOM"
           placeholder="MY PLACEHOLDER"
@@ -103,6 +103,10 @@ storiesOf("Similar", module)
           fields={["AUTR.keyword"]}
           itemsPerBlock={10}
         />
+        {/* <CustomWidget id="custom">
+          <MyComponent />
+        </CustomWidget> */}
+        {/* 
         <Results
           id="result"
           item={(source, score, id) => (
@@ -112,7 +116,7 @@ storiesOf("Similar", module)
           )}
           pagination={() => <div />}
           react={["main"]}
-        />
+        /> */}
       </Elasticsearch>
     );
   });

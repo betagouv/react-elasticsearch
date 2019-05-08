@@ -14,12 +14,11 @@ export default function({ children, url, onChange, headers }) {
           needsQuery: action.needsQuery,
           needsConfiguration: action.needsConfiguration,
           isFacet: action.isFacet,
-          wantResults: action.wantResults,
           query: action.query,
           value: action.value,
           configuration: action.configuration,
-          result: action.result,
-          react: action.react
+          react: action.react,
+          response: action.response
         };
         console.log("action.query", action.key, action.query);
         widgets.set(action.key, widget);

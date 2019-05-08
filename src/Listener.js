@@ -56,7 +56,6 @@ export default function({ children, onChange }) {
 
             resultWidgets.forEach((widget, id) => {
               const queries = [];
-              console.log("widget.react", widget.react);
               for (let i = 0; i < widget.react.length; i++) {
                 const w = widgets.get(widget.react[i]);
                 console.warn(`Cant find component ${widget.react[i]} reacting to component ${id}`);
@@ -64,17 +63,11 @@ export default function({ children, onChange }) {
               }
               msearchData.push({
                 queries,
-                id,
-                data: result => result.hits.hits,
-                total: result => result.hits.total
+                id
+                // data: result => result.hits.hits,
+                // total: result => result.hits.total
               });
             });
-
-            // widgets.forEach((widget, id) => {
-            //   if (widget.query) {
-
-            //   }
-            // });
 
             // resultWidgets.forEach((r, id) => {
             //   const { itemsPerPage, page, sort } = r.configuration;
@@ -141,10 +134,8 @@ export default function({ children, onChange }) {
                 const result = await msearch(url, msearchData, headers);
                 result.responses.forEach((response, key) => {
                   const widget = widgets.get(msearchData[key].id);
-                  widget.result = {
-                    data: msearchData[key].data(response),
-                    total: msearchData[key].total(response)
-                  };
+                  widget.response = response;
+                  console.log("widget.response", widget.response);
                   // Update widget
                   dispatch({ type: "setWidget", key: msearchData[key].id, ...widget });
                 });
