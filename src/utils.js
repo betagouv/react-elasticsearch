@@ -52,6 +52,24 @@ export function fromUrlQueryString(str) {
   ]);
 }
 
+export function getTotal(widget) {
+  return (widget && widget.response && widget.response.hits && widget.response.hits.total) || 0;
+}
+
+export function getHits(widget) {
+  return (widget && widget.response && widget.response.hits && widget.response.hits.hits) || [];
+}
+
+export function getAggregations(widget, name) {
+  return (
+    (widget &&
+      widget.response &&
+      widget.response.aggregations[name] &&
+      widget.response.aggregations[name].buckets) ||
+    []
+  );
+}
+
 // Todo: clean this ugly funtion
 export function toUrlQueryString(params) {
   return qs.stringify(

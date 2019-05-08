@@ -1,16 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { toTermQueries } from "./utils";
+import { toTermQueries, getAggregations } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
-
-function getTotal(response) {
-  return (response && response.hits && response.hits.total) || 0;
-}
-function getData(response) {
-  return (response && response.hits && response.hits.hits) || [];
-}
-function getAggregations(response, name) {
-  return (response && response.aggregations[name] && response.aggregations[name].buckets) || [];
-}
 
 export default function({
   fields,
@@ -30,9 +20,8 @@ export default function({
   // The actual selected items in facet.
   const [value, setValue] = useState(initialValue || []);
   // Data from internal queries (Elasticsearch queries are performed via Listener)
-  const { response } = widgets.get(id) || {};
 
-  const aggs = getAggregations(response, "facet");
+  const aggs = getAggregations(widgets.get(`${id}_facet`), "facet");
 
   /*
 GET _search
@@ -62,16 +51,42 @@ GET _search
     return query;
   }
 
-  // Update widgets properties on state change.
+  function getQuery() {
+    console.log("value", value);
+    if (!value || !value.length) {
+      return { query: { match_all: {} } };
+    }
+
+    const arr = value.map(v => {
+      const term = {};
+      term[fields[0]] = v;
+      return { term };
+    });
+
+    return { query: { bool: { must: arr } } };
+  }
+
+  // Update facets
   useEffect(() => {
     dispatch({
       type: "setWidget",
-      key: id,
-      react: [id],
+      key: `${id}_facet`,
+      react: [`${id}_facet`],
       query: getAggsQuery(),
       value
     });
-  }, [size, filterValue, value]);
+  }, [size, filterValue]);
+
+  // Update Query
+  useEffect(() => {
+    dispatch({
+      type: "setWidget",
+      key: `${id}`,
+      // react: [id],
+      query: getQuery(),
+      value
+    });
+  }, [value]);
 
   // If widget value was updated elsewhere (ex: from active filters deletion)
   // We have to update and dispatch the component.

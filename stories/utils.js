@@ -5,6 +5,7 @@ export function customQuery(query) {
   return { multi_match: { query, type: "phrase", fields: ["TICO"] } };
 }
 
+
 export function customQueryMovie(query) {
   if (!query) {
     return { match_all: {} };

@@ -106,7 +106,6 @@ storiesOf("Similar", module)
         {/* <CustomWidget id="custom">
           <MyComponent />
         </CustomWidget> */}
-        {/* 
         <Results
           id="result"
           item={(source, score, id) => (
@@ -115,8 +114,8 @@ storiesOf("Similar", module)
             </div>
           )}
           pagination={() => <div />}
-          react={["main"]}
-        /> */}
+          react={["autr"]}
+        />
       </Elasticsearch>
     );
   });

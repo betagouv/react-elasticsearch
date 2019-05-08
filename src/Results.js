@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSharedContext } from "./SharedContextProvider";
+import { getHits, getTotal } from "./utils";
 import Pagination from "./Pagination";
 
 // Pagination, informations about results (like "30 results")
@@ -18,8 +19,9 @@ export default function({
   const [initialization, setInitialization] = useState(true);
   const [page, setPage] = useState(initialPage);
   const widget = widgets.get(id);
-  const data = widget && widget.result && widget.result.data ? widget.result.data : [];
-  const total = widget && widget.result && widget.result.total ? widget.result.total : 0;
+
+  const data = getHits(widget);
+  const total = getTotal(widget);
   itemsPerPage = itemsPerPage || 10;
 
   useEffect(() => {
