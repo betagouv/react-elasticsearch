@@ -20,6 +20,7 @@ export default function({ children, url, onChange, headers }) {
           configuration: action.configuration,
           result: action.result
         };
+        console.log("action.query", action.key, action.query);
         widgets.set(action.key, widget);
         return { ...state, widgets };
       case "deleteWidget":
@@ -34,9 +35,7 @@ export default function({ children, url, onChange, headers }) {
 
   return (
     <SharedContextProvider initialState={initialState} reducer={reducer}>
-      <Listener onChange={onChange}>
-        {children}
-      </Listener>
+      <Listener onChange={onChange}>{children}</Listener>
     </SharedContextProvider>
   );
 }

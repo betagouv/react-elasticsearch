@@ -4,29 +4,31 @@ import { customQueryMovie, url } from "./utils";
 import { Results, SearchBox, Elasticsearch, CustomWidget } from "../src";
 
 export default function getSimilarQuery(job, size = 100) {
-  const query = { match_all: {} };
+  const query = { query: { match_all: {} } };
   return query;
 
-  let functions = "";
-  functions += `def weight=1;\n`;
-  functions += `if(doc['postable'].value == false){ return -1}\n`;
-  functions += `if(doc['status.keyword'].value != 'published'){ return -1;}\n`;
-  functions += `return weight`;
-  const scoreQuery = {
-    query: {
-      function_score: {
-        query: { match_all: {} },
-        script_score: { script: { source: functions } }
-      }
-    },
-    size
-  };
-  return scoreQuery;
+  // let functions = "";
+  // functions += `def weight=1;\n`;
+  // functions += `if(doc['postable'].value == false){ return -1}\n`;
+  // functions += `if(doc['status.keyword'].value != 'published'){ return -1;}\n`;
+  // functions += `return weight`;
+  // const scoreQuery = {
+  //   query: {
+  //     function_score: {
+  //       query: { match_all: {} },
+  //       script_score: { script: { source: functions } }
+  //     }
+  //   },
+  //   size
+  // };
+  // return scoreQuery;
 }
 
 function MyComponent({ ctx, dispatch }) {
   const { widgets } = ctx;
   const widget = widgets.get("Similar");
+
+  console.log(widget);
 
   const data = widget && widget.result && widget.result.data ? widget.result.data : [];
   const total = widget && widget.result && widget.result.total ? widget.result.total : 0;
@@ -43,49 +45,29 @@ function MyComponent({ ctx, dispatch }) {
       query,
       value: "SimilarComponent",
       configuration: { itemsPerPage: 3, page: 1, sort: null },
-      result: data && total ? { data, total } : null
+      result: data && total ? { data, total } : null,
+      react: { and: ["main"] }
     });
   }, []);
+
+  const arr = data.map(e => <div key={e._id}>{`${e._source.TICO} (${e._score})`}</div>);
   return (
     <div>
-      MyComponent : {data} {total}
+      MyComponent : {total}
+      <div>{arr}</div>
     </div>
   );
 }
-
-/*
-      type: "setWidget",
-      key: id,
-      needsQuery: false,
-      needsConfiguration: true,
-      isFacet: false,
-      wantResults: true,
-      query: null,
-      value: null,
-      configuration: { itemsPerPage, page, sort },
-      result: data && total ? { data, total } : null
-      */
 
 storiesOf("Similar", module)
   .add("basic usage", () => {
     return (
       <Elasticsearch url={url}>
-        <SearchBox id="main" />
+        <SearchBox id="main" fields={["AUTR"]} />
         <CustomWidget>
           <MyComponent />
         </CustomWidget>
-        <Results
-          id="result"
-          item={(source, score, id) => (
-            <div key={id}>
-              <img src={source.poster_path} />
-              <b>
-                {source.original_title} - {source.tagline}
-              </b>{" "}
-              - score: {score}
-            </div>
-          )}
-        />
+
         {/* <SearchBox id="main" /> */}
         {/* <Results
         id="result"

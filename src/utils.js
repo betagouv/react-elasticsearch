@@ -13,8 +13,11 @@ export function msearch(url, msearchData, headers = {}) {
       const [p, q] = [{ preference: val.id }, val.query].map(JSON.stringify);
       return `${acc}${p}\n${q}\n`;
     }, "");
+
+    console.log("body", body);
     const rawResponse = await fetch(`${url}/_msearch`, { method: "POST", headers, body });
     const response = await rawResponse.json();
+    console.log("response", response);
     resolve(response);
   });
 }

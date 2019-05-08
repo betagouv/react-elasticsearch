@@ -17,13 +17,15 @@ export default function({ customQuery, fields, id, initialValue, placeholder }) 
   }, [isValueReady()]);
 
   // Build a query from a value.
-  function queryFromValue(query) {
+  function queryFromValue(value) {
+    console.log("queryFromValue", value);
     if (customQuery) {
-      return customQuery(query);
-    } else if (fields) {
-      return query ? { multi_match: { query, type: "phrase", fields } } : { match_all: {} };
+      return customQuery(value);
+    } else if (value) {
+      //@todo . if no fields specified, error message !
+      return { query: { multi_match: { query: value, type: "phrase", fields } } };
     }
-    return { match_all: {} };
+    return { query: { match_all: {} } };
   }
 
   // This functions updates the current values, then dispatch
