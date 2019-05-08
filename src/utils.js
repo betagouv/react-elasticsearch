@@ -9,8 +9,9 @@ export function msearch(url, msearchData, headers = {}) {
       ...{ Accept: "application/json", "Content-Type": "application/x-ndjson" },
       ...headers
     };
+    console.log("msearchData", msearchData);
     const body = msearchData.reduce((acc, val) => {
-      const [p, q] = [{ preference: val.id }, val.query].map(JSON.stringify);
+      const [p, q] = [{ preference: val.id }, queryFrom(val.queries)].map(JSON.stringify);
       return `${acc}${p}\n${q}\n`;
     }, "");
 
@@ -24,7 +25,15 @@ export function msearch(url, msearchData, headers = {}) {
 
 // Build a query from a Map of queries
 export function queryFrom(queries) {
-  return { bool: { must: queries.size === 0 ? { match_all: {} } : Array.from(queries.values()) } };
+  console.log("MERGE THIS", queries);
+  if (queries.length === 0) {
+    return { match_all: {} };
+  } else if (queries.length === 1) {
+    return queries[0];
+  } else {
+
+  }
+  // return { bool: { must: queries.size === 0 ? { match_all: {} } : Array.from(queries.values()) } };
 }
 
 // Convert fields to term queries

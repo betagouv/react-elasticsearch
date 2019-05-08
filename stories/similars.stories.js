@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { storiesOf } from "@storybook/react";
 import { customQueryMovie, url } from "./utils";
-import { Results, SearchBox, Elasticsearch, CustomWidget } from "../src";
+import { Results, SearchBox, Elasticsearch, CustomWidget, Facet } from "../src";
 
 export default function getSimilarQuery(job, size = 100) {
   const query = { query: { match_all: {} } };
@@ -46,7 +46,7 @@ function MyComponent({ ctx, dispatch }) {
       value: "SimilarComponent",
       configuration: { itemsPerPage: 3, page: 1, sort: null },
       result: data && total ? { data, total } : null,
-      react: { and: ["main"] }
+      react: ["main"]
     });
   }, []);
 
@@ -63,7 +63,7 @@ storiesOf("Similar", module)
   .add("basic usage", () => {
     return (
       <Elasticsearch url={url}>
-        <SearchBox id="main" fields={["AUTR"]} />
+        <SearchBox id="main" fields={["TICO"]} />
         <CustomWidget>
           <MyComponent />
         </CustomWidget>
@@ -95,18 +95,23 @@ storiesOf("Similar", module)
   .add("test", () => {
     return (
       <Elasticsearch url={url}>
-        <SearchBox id="main" />
+        <SearchBox id="main" fields={["TICO"]} />
+        <Facet
+          seeMore="SEE MORE CUSTOM"
+          placeholder="MY PLACEHOLDER"
+          id="autr"
+          fields={["AUTR.keyword"]}
+          itemsPerBlock={10}
+        />
         <Results
           id="result"
           item={(source, score, id) => (
             <div key={id}>
-              <img src={source.poster_path} />
-              <b>
-                {source.original_title} - {source.tagline}
-              </b>{" "}
-              - score: {score}
+              <b>{source.TICO}</b>- score: {score}
             </div>
           )}
+          pagination={() => <div />}
+          react={["main"]}
         />
       </Elasticsearch>
     );

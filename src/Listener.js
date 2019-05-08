@@ -14,10 +14,12 @@ export default function({ children, onChange }) {
   function mapFrom(key) {
     return new Map([...widgets].filter(([, v]) => v[key]).map(([k, v]) => [k, v[key]]));
   }
+
   const configurableWidgets = widgetThat("needsConfiguration");
   const facetWidgets = widgetThat("isFacet");
   const searchWidgets = widgetThat("needsQuery");
-  const resultWidgets = widgetThat("wantResults");
+  const resultWidgets = widgetThat("react");
+
   const queries = mapFrom("query");
   const configurations = mapFrom("configuration");
   const values = mapFrom("value");
@@ -40,9 +42,10 @@ export default function({ children, onChange }) {
     // If you are debugging and your debug path leads you here, you might
     // check configurableWidgets and searchWidgets actually covers
     // the whole list of components that are configurables and queryable.
-    const queriesReady = queries.size === widgets.size;
+    const queriesReady = true; //queries.size === widgets.size;
     const configurationsReady = configurations.size === configurableWidgets.size;
-    if (queriesReady && configurationsReady) {
+    console.log("widgets", widgets);
+    if (true && configurationsReady) {
       // The actual query to ES is deffered, to wait for all effects
       // and context operations before running.
       defer(() => {
@@ -51,18 +54,27 @@ export default function({ children, onChange }) {
           value: () => {
             const msearchData = [];
 
-            console.log("widgets", widgets, queries);
-
-            widgets.forEach((widget, id) => {
-              if (widget.query) {
-                msearchData.push({
-                  query: widget.query,
-                  data: result => result.hits.hits,
-                  total: result => result.hits.total,
-                  id
-                });
+            resultWidgets.forEach((widget, id) => {
+              const queries = [];
+              console.log("widget.react", widget.react);
+              for (let i = 0; i < widget.react.length; i++) {
+                const w = widgets.get(widget.react[i]);
+                console.warn(`Cant find component ${widget.react[i]} reacting to component ${id}`);
+                queries.push(w.query);
               }
+              msearchData.push({
+                queries,
+                id,
+                data: result => result.hits.hits,
+                total: result => result.hits.total
+              });
             });
+
+            // widgets.forEach((widget, id) => {
+            //   if (widget.query) {
+
+            //   }
+            // });
 
             // resultWidgets.forEach((r, id) => {
             //   const { itemsPerPage, page, sort } = r.configuration;
@@ -126,7 +138,6 @@ export default function({ children, onChange }) {
               console.log("fetchData", msearchData);
               // Only if there is a query to run.
               if (msearchData.length) {
-                console.log(msearchData);
                 const result = await msearch(url, msearchData, headers);
                 result.responses.forEach((response, key) => {
                   const widget = widgets.get(msearchData[key].id);

@@ -18,7 +18,6 @@ export default function({ customQuery, fields, id, initialValue, placeholder }) 
 
   // Build a query from a value.
   function queryFromValue(value) {
-    console.log("queryFromValue", value);
     if (customQuery) {
       return customQuery(value);
     } else if (value) {

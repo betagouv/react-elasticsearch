@@ -18,7 +18,8 @@ export default function({ children, url, onChange, headers }) {
           query: action.query,
           value: action.value,
           configuration: action.configuration,
-          result: action.result
+          result: action.result,
+          react: action.react
         };
         console.log("action.query", action.key, action.query);
         widgets.set(action.key, widget);
