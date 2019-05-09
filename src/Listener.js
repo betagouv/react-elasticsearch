@@ -70,6 +70,10 @@ export default function({ children, onChange, ...rest }) {
                 const result = await msearch(url, msearchData, headers);
                 result.responses.forEach((response, key) => {
                   const widget = widgets.get(msearchData[key].id);
+                  if (response.status !== 200) {
+                    console.error(response.error.reason);
+                    return;
+                  }
                   widget.response = response;
                   dispatch({ type: "setWidget", key: msearchData[key].id, ...widget }); // Update widget
                 });
