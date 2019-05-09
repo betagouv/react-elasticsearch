@@ -50,6 +50,13 @@ export function ruleQuery(key, operator, value) {
     return {
       wildcard: { [key]: `*${value}*` }
     };
+  } else if (operator === "!*" && value) {
+    // { value: "!*", text: "does not contain" }
+    return {
+      bool: {
+        must_not: { wildcard: { [key]: `*${value}*` } }
+      }
+    };
   } else {
     return null;
   }
@@ -79,6 +86,7 @@ export const defaultOperators = [
   { value: "∃", text: "exists", useInput: false },
   { value: "!∃", text: "does not exist", useInput: false },
   { value: "*", text: "contains", useInput: true },
+  { value: "!*", text: "does not contains", useInput: true },
   { value: "^", text: "start with", useInput: true }
 ];
 
