@@ -3,7 +3,7 @@ import { SharedContextProvider } from "./SharedContextProvider";
 import Listener from "./Listener";
 
 // Main component. See storybook for usage.
-export default function({ children, url, onChange, headers }) {
+export default function({ children, url, onChange, headers, ...rest }) {
   const initialState = { url, listenerEffect: null, widgets: new Map(), headers };
 
   const reducer = (state, action) => {
@@ -20,7 +20,6 @@ export default function({ children, url, onChange, headers }) {
           react: action.react,
           response: action.response
         };
-        console.log("action.query", action.key, action.query);
         widgets.set(action.key, widget);
         return { ...state, widgets };
       case "deleteWidget":
@@ -35,7 +34,9 @@ export default function({ children, url, onChange, headers }) {
 
   return (
     <SharedContextProvider initialState={initialState} reducer={reducer}>
-      <Listener onChange={onChange}>{children}</Listener>
+      <Listener onChange={onChange} {...rest}>
+        {children}
+      </Listener>
     </SharedContextProvider>
   );
 }

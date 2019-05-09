@@ -94,28 +94,57 @@ storiesOf("Similar", module)
 
   .add("test", () => {
     return (
-      <Elasticsearch url={url}>
-        {/* <SearchBox id="main" fields={["TICO"]} /> */}
-        <Facet
-          seeMore="SEE MORE CUSTOM"
-          placeholder="MY PLACEHOLDER"
-          id="autr"
-          fields={["AUTR.keyword"]}
-          itemsPerBlock={10}
-        />
+      <Elasticsearch url={url} style={{ display: "flex" }}>
+        <div>
+          <Facet
+            seeMore="SEE MORE CUSTOM"
+            placeholder="MY PLACEHOLDER"
+            id="autr"
+            fields={["AUTR.keyword"]}
+            itemsPerBlock={10}
+            react={["main"]}
+          />
+          {/* <Facet
+            seeMore="SEE MORE CUSTOM"
+            placeholder="MY PLACEHOLDER"
+            id="insee"
+            fields={["INSEE.keyword"]}
+            itemsPerBlock={10}
+          />
+          <Facet
+            seeMore="SEE MORE CUSTOM"
+            placeholder="MY PLACEHOLDER"
+            id="dpro"
+            fields={["DPRO.keyword"]}
+            itemsPerBlock={10}
+          />
+          <Facet
+            seeMore="SEE MORE CUSTOM"
+            placeholder="MY PLACEHOLDER"
+            id="stat"
+            fields={["STAT.keyword"]}
+            itemsPerBlock={10}
+          /> */}
+        </div>
+        <div>
+          <div style={{ paddingBottom: "20px" }}>
+            <SearchBox id="main" fields={["TICO"]} />
+          </div>
+          <Results
+            id="result"
+            item={(source, score, id) => (
+              <div key={id}>
+                <b>{source.TICO}</b>- score: {score}
+              </div>
+            )}
+            pagination={() => <div />}
+            react={["autr", "main", "dpro", "insee", "stat"]}
+          />
+        </div>
+
         {/* <CustomWidget id="custom">
           <MyComponent />
         </CustomWidget> */}
-        <Results
-          id="result"
-          item={(source, score, id) => (
-            <div key={id}>
-              <b>{source.TICO}</b>- score: {score}
-            </div>
-          )}
-          pagination={() => <div />}
-          react={["autr"]}
-        />
       </Elasticsearch>
     );
   });

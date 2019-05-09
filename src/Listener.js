@@ -3,7 +3,7 @@ import { useSharedContext } from "./SharedContextProvider";
 import { msearch, queryFrom, defer } from "./utils";
 
 // This component needs to be cleaned.
-export default function({ children, onChange }) {
+export default function({ children, onChange, ...rest }) {
   const [{ url, listenerEffect, widgets, headers }, dispatch] = useSharedContext();
 
   // We need to prepare some data in each render.
@@ -19,7 +19,6 @@ export default function({ children, onChange }) {
   const facetWidgets = widgetThat("isFacet");
   const searchWidgets = widgetThat("needsQuery");
   const resultWidgets = widgetThat("react");
-
   const queries = mapFrom("query");
   const configurations = mapFrom("configuration");
   const values = mapFrom("value");
@@ -44,7 +43,6 @@ export default function({ children, onChange }) {
     // the whole list of components that are configurables and queryable.
     const queriesReady = true; //queries.size === widgets.size;
     const configurationsReady = configurations.size === configurableWidgets.size;
-    console.log("widgets", widgets);
     if (true && configurationsReady) {
       // The actual query to ES is deffered, to wait for all effects
       // and context operations before running.
@@ -53,20 +51,19 @@ export default function({ children, onChange }) {
           type: "setListenerEffect",
           value: () => {
             const msearchData = [];
-
             resultWidgets.forEach((widget, id) => {
               const queries = [];
               for (let i = 0; i < widget.react.length; i++) {
                 const w = widgets.get(widget.react[i]);
-                console.warn(`Cant find component ${widget.react[i]} reacting to component ${id}`);
+                if (!w) {
+                  console.warn(
+                    `Cant find component ${widget.react[i]} reacting to component ${id}`
+                  );
+                  continue;
+                }
                 queries.push(w.query);
               }
-              msearchData.push({
-                queries,
-                id
-                // data: result => result.hits.hits,
-                // total: result => result.hits.total
-              });
+              msearchData.push({ queries, id });
             });
 
             // resultWidgets.forEach((r, id) => {
@@ -128,14 +125,13 @@ export default function({ children, onChange }) {
 
             // Fetch the data.
             async function fetchData() {
-              console.log("fetchData", msearchData);
               // Only if there is a query to run.
               if (msearchData.length) {
                 const result = await msearch(url, msearchData, headers);
+                console.log("result", result);
                 result.responses.forEach((response, key) => {
                   const widget = widgets.get(msearchData[key].id);
                   widget.response = response;
-                  console.log("widget.response", widget.response);
                   // Update widget
                   dispatch({ type: "setWidget", key: msearchData[key].id, ...widget });
                 });
@@ -150,5 +146,5 @@ export default function({ children, onChange }) {
     }
   }, [JSON.stringify(Array.from(queries)), JSON.stringify(Array.from(configurations))]);
 
-  return <>{children}</>;
+  return <div {...rest}>{children}</div>;
 }

@@ -10,7 +10,8 @@ export default function({
   placeholder,
   showFilter = true,
   filterValueModifier,
-  itemsPerBlock
+  itemsPerBlock,
+  react = []
 }) {
   const [{ widgets }, dispatch] = useSharedContext();
   // Current filter (search inside facet value).
@@ -22,25 +23,6 @@ export default function({
   // Data from internal queries (Elasticsearch queries are performed via Listener)
 
   const aggs = getAggregations(widgets.get(`${id}_facet`), "facet");
-
-  /*
-GET _search
-{
-  "size": 0,
-  "aggregations": {
-    "facet": {
-      "terms": {
-        "field": "AUTR.keyword",
-        "size": 10
-      }
-    }
-  },
-  "query": {
-    "term": {
-      "AUTR.keyword": "ou"
-    }
-  }
-}*/
 
   function getAggsQuery() {
     const query = {};
@@ -71,7 +53,7 @@ GET _search
     dispatch({
       type: "setWidget",
       key: `${id}_facet`,
-      react: [`${id}_facet`],
+      react: [`${id}_facet`, ...react],
       query: getAggsQuery(),
       value
     });
