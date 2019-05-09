@@ -10,7 +10,6 @@ export function msearch(url, msearchData, headers = {}) {
       ...headers
     };
     const body = msearchData.reduce((acc, val) => {
-      console.log("val.queries", val);
       const [p, q] = [{ preference: val.id }, queryFrom(val.queries)].map(JSON.stringify);
       return `${acc}${p}\n${q}\n`;
     }, "");
@@ -23,7 +22,6 @@ export function msearch(url, msearchData, headers = {}) {
 
 // Build a query from a Map of queries
 export function queryFrom(queries) {
-  console.log("queriesqueriesqueriesqueriesqueries", queries);
   if (queries.length === 0) {
     return { query: { match_all: {} } };
   } else if (queries.length === 1) {

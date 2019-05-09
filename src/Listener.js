@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSharedContext } from "./SharedContextProvider";
 import { msearch, defer, isEqual } from "./utils";
 
 // This component needs to be cleaned.
 export default function({ children, onChange, ...rest }) {
   const [{ url, listenerEffect, widgets, headers }, dispatch] = useSharedContext();
+  const [queriesTmp, setQueriesTmp] = useState([]);
 
   // // We need to prepare some data in each render.
   // // This needs to be done out of the effect function.
@@ -38,7 +39,10 @@ export default function({ children, onChange, ...rest }) {
     // If you are debugging and your debug path leads you here, you might
     // check configurableWidgets and searchWidgets actually covers
     // the whole list of components that are configurables and queryable.
-    if (true) {
+    const update = !isEqual([...queries], queriesTmp);
+    if (update) {
+      console.log("UPDATE");
+      setQueriesTmp([...queries]);
       // The actual query to ES is deffered, to wait for all effects
       // and context operations before running.
       defer(() => {
@@ -67,7 +71,6 @@ export default function({ children, onChange, ...rest }) {
 
             // Fetch the data.
             async function fetchData() {
-              console.log("msearchData", msearchData);
               // Only if there is a query to run.
               if (msearchData.length) {
                 const result = await msearch(url, msearchData, headers);

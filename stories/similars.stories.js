@@ -59,17 +59,17 @@ function MyComponent({ ctx, dispatch, updateQuery, onData, onAggr }) {
   );
 }
 
-storiesOf("Similar", module)
-  .add("basic usage", () => {
-    return (
-      <Elasticsearch url={url}>
-        <SearchBox id="main" fields={["TICO"]} />
+storiesOf("Similar", module).add("basic usage", () => {
+  return (
+    <Elasticsearch url={url}>
+      <div>TODO</div>
+      {/* <SearchBox id="main" fields={["TICO"]} />
         <CustomWidget>
           <MyComponent />
-        </CustomWidget>
+        </CustomWidget> */}
 
-        {/* <SearchBox id="main" /> */}
-        {/* <Results
+      {/* <SearchBox id="main" /> */}
+      {/* <Results
         id="result"
         item={(source, score, id) => {
           console.log(source, score, id);
@@ -87,9 +87,7 @@ storiesOf("Similar", module)
           );
         }}
       /> */}
-        <div />
-      </Elasticsearch>
-    );
-  })
-
-
+      <div />
+    </Elasticsearch>
+  );
+});
