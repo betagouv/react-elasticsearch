@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSharedContext } from "./SharedContextProvider";
-import { msearch, queryFrom, defer, isEqual } from "./utils";
+import { msearch, defer, isEqual } from "./utils";
 
 // This component needs to be cleaned.
 export default function({ children, onChange, ...rest }) {
@@ -67,6 +67,7 @@ export default function({ children, onChange, ...rest }) {
 
             // Fetch the data.
             async function fetchData() {
+              console.log("msearchData", msearchData);
               // Only if there is a query to run.
               if (msearchData.length) {
                 const result = await msearch(url, msearchData, headers);
@@ -87,6 +88,5 @@ export default function({ children, onChange, ...rest }) {
   }, [JSON.stringify(Array.from(queries))]);
   //TODO @raph I added isEqual function in utils. How can I use it to run the hook without having to store  ? It seems the useEffect internaly compare the current and the previous value
 
-  console.log(children)
   return <div {...rest}>{children}</div>;
 }

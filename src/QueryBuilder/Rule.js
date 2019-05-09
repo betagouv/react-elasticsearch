@@ -45,7 +45,13 @@ export default function Rule({ fields, operators, combinators, ...props }) {
           onSuggestionsFetchRequested={async ({ value }) => {
             const terms = { field, include: `.*${value}.*`, order: { _count: "desc" }, size: 10 };
             const query = { query: { match_all: {} }, aggs: { [field]: { terms } }, size: 0 };
-            const suggestions = await msearch(url, [{ query, id: "queryBuilder" }], headers);
+
+            const suggestions = await msearch(
+              url,
+              [{ queries: [query], id: "queryBuilder" }],
+              headers
+            );
+            console.log("suggestions", suggestions);
             setSuggestions(suggestions.responses[0].aggregations[field].buckets.map(e => e.key));
           }}
           onSuggestionsClearRequested={() => setSuggestions([])}

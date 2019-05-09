@@ -10,6 +10,7 @@ export function msearch(url, msearchData, headers = {}) {
       ...headers
     };
     const body = msearchData.reduce((acc, val) => {
+      console.log("val.queries", val);
       const [p, q] = [{ preference: val.id }, queryFrom(val.queries)].map(JSON.stringify);
       return `${acc}${p}\n${q}\n`;
     }, "");
@@ -22,6 +23,7 @@ export function msearch(url, msearchData, headers = {}) {
 
 // Build a query from a Map of queries
 export function queryFrom(queries) {
+  console.log("queriesqueriesqueriesqueriesqueries", queries);
   if (queries.length === 0) {
     return { query: { match_all: {} } };
   } else if (queries.length === 1) {
@@ -29,7 +31,6 @@ export function queryFrom(queries) {
   } else {
     return mergeQueries(queries);
     //#https://github.com/appbaseio/reactivecore/blob/master/src/utils/helper.js
-    return { query: { match_all: {} } };
   }
   // return { bool: { must: queries.size === 0 ? { match_all: {} } : Array.from(queries.values()) } };
 }
@@ -42,7 +43,7 @@ function mergeQueries(queries) {
       if (q.query.bool.must) {
         query.query.bool.must.push(...q.query.bool.must);
       }
-      if (q.query.bool.should) {
+      if (q.query.bool.should && q.query.bool.should.length) {
         query.query.bool.should.push(...q.query.bool.should);
         query.query.bool.minimum_should_match = 1;
       }

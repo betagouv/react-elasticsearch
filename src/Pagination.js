@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect } from "react";
 import { useSharedContext } from "./SharedContextProvider";
 
 // The main objective is to have this display:
@@ -20,7 +19,6 @@ function buttons(page, max) {
 
 export default function({ onChange, total, itemsPerPage, page, id }) {
   const [{}, dispatch] = useSharedContext();
-  console.log("1")
   const max = Math.min(Math.ceil(total / itemsPerPage), 10000 / itemsPerPage);
 
   function createQuery() {

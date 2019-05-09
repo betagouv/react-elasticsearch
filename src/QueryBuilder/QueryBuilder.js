@@ -31,14 +31,8 @@ export default function QueryBuilder({
     dispatch({
       type: "setWidget",
       key: id,
-      needsQuery: true,
-      needsConfiguration: false,
-      isFacet: false,
-      wantResults: false,
-      query: { bool: queries },
-      value: rules,
-      configuration: null,
-      result: null
+      query: { query: { bool: queries } },
+      value: rules
     });
   }, [JSON.stringify(rules)]);
 
