@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { toTermQueries, getAggregations } from "./utils";
+import { getAggregations } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
 export default function({
@@ -40,7 +40,6 @@ export default function({
   }
 
   function getQuery() {
-    console.log("value", value);
     if (!value || !value.length) {
       return { query: { match_all: {} } };
     }

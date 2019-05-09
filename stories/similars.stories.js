@@ -63,31 +63,6 @@ storiesOf("Similar", module).add("basic usage", () => {
   return (
     <Elasticsearch url={url}>
       <div>TODO</div>
-      {/* <SearchBox id="main" fields={["TICO"]} />
-        <CustomWidget>
-          <MyComponent />
-        </CustomWidget> */}
-
-      {/* <SearchBox id="main" /> */}
-      {/* <Results
-        id="result"
-        item={(source, score, id) => {
-          console.log(source, score, id);
-          return (
-            <div key={id}>
-              <img src={source.poster_path} />
-              <b>
-                {source.original_title} - {source.tagline}
-              </b>{" "}
-              <div>{source.release_year}</div>
-              <div>{source.genre}</div>
-              <div>{source.original_language}</div>
-              <div>score: {score}</div>
-            </div>
-          );
-        }}
-      /> */}
-      <div />
     </Elasticsearch>
   );
 });

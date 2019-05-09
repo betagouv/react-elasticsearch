@@ -12,7 +12,6 @@ storiesOf("Pagination", module).add("with various status", () => {
     </div>
   ));
 
-  console.log("LOL", paginations);
   return (
     <Elasticsearch url={url}>
       {paginations}

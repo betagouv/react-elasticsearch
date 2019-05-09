@@ -7,11 +7,6 @@ export default function({ children, onChange, ...rest }) {
   const [{ url, listenerEffect, widgets, headers }, dispatch] = useSharedContext();
   const [queriesTmp, setQueriesTmp] = useState([]);
 
-  // // We need to prepare some data in each render.
-  // // This needs to be done out of the effect function.
-  // function widgetThat(key) {
-  //   return new Map([...widgets].filter(([, v]) => v[key]));
-  // }
   function mapFrom(key) {
     return new Map([...widgets].filter(([, v]) => v[key]).map(([k, v]) => [k, v[key]]));
   }
@@ -41,7 +36,6 @@ export default function({ children, onChange, ...rest }) {
     // the whole list of components that are configurables and queryable.
     const update = !isEqual([...queries], queriesTmp);
     if (update) {
-      console.log("UPDATE");
       setQueriesTmp([...queries]);
       // The actual query to ES is deffered, to wait for all effects
       // and context operations before running.
@@ -89,7 +83,6 @@ export default function({ children, onChange, ...rest }) {
       });
     }
   }, [JSON.stringify(Array.from(queries))]);
-  //TODO @raph I added isEqual function in utils. How can I use it to run the hook without having to store  ? It seems the useEffect internaly compare the current and the previous value
 
   return <div {...rest}>{children}</div>;
 }
