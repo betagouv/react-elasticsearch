@@ -38,7 +38,13 @@ export function toTermQueries(fields, selectedValues) {
 // Todo: clean this ugly funtion
 export function fromUrlQueryString(str) {
   return new Map([
-    ...Object.entries(qs.parse(str.replace(/^\?/, ""))).map(([k, v]) => [k, JSON.parse(v)])
+    ...Object.entries(qs.parse(str.replace(/^\?/, ""))).map(([k, v]) => {
+      try {
+        return [k, JSON.parse(v)];
+      } catch (e) {
+        return [k, v]
+      }
+    })
   ]);
 }
 
