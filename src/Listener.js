@@ -114,6 +114,10 @@ export default function({ children, onChange }) {
                 const result = await msearch(url, msearchData, headers);
                 result.responses.forEach((response, key) => {
                   const widget = widgets.get(msearchData[key].id);
+                  if (response.status !== 200) {
+                    console.error(response.error.reason);
+                    return;
+                  }
                   widget.result = {
                     data: msearchData[key].data(response),
                     total: msearchData[key].total(response)
