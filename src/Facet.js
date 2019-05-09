@@ -27,9 +27,15 @@ export default function({
   function getAggsQuery() {
     const query = {};
     query.size = 0;
-    query.aggregations = { facet: { terms: { field: fields[0], size } } };
-    query.query = { term: {} };
-    query.query.term[fields[0]] = filterValue;
+    query.aggregations = {
+      facet: { terms: { field: fields[0], size, order: { _count: "desc" } } }
+    };
+    if (filterValue) {
+      query.aggregations.facet.terms.include = !filterValueModifier
+        ? `.*${filterValue}.*`
+        : filterValueModifier(filterValue);
+    }
+    query.query = { match_all: {} };
     return query;
   }
 
@@ -45,7 +51,7 @@ export default function({
       return { term };
     });
 
-    return { query: { bool: { must: arr } } };
+    return { query: { bool: { should: arr } } };
   }
 
   // Update facets
@@ -55,7 +61,7 @@ export default function({
       key: `${id}_facet`,
       react: [`${id}_facet`, ...react],
       query: getAggsQuery(),
-      value
+      value: ""
     });
   }, [size, filterValue]);
 

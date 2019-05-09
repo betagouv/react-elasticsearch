@@ -6,7 +6,7 @@ import Pagination from "./Pagination";
 // Pagination, informations about results (like "30 results")
 // and size (number items per page) are customizable.
 export default function({
-  itemsPerPage,
+  itemsPerPage = 10,
   initialPage = 1,
   pagination,
   stats,
@@ -22,7 +22,17 @@ export default function({
 
   const data = getHits(widget);
   const total = getTotal(widget);
-  itemsPerPage = itemsPerPage || 10;
+
+  //If no react, react to all I tries, I failed
+  // console.log("REACT TO ALL", widgets);
+  // if (!react) {
+  //   react = [...widgets].reduce((acc, v) => {
+  //     if (v[0].indexOf("_facet") === -1 && v[0] !== id) {
+  //       acc.push(v[0]);
+  //     }
+  //     return acc;
+  //   }, []);
+  // }
 
   useEffect(() => {
     setPage(initialization ? initialPage : 1);
@@ -35,15 +45,13 @@ export default function({
       type: "setWidget",
       key: id,
       react,
-      needsQuery: false,
-      needsConfiguration: true,
-      isFacet: false,
-      wantResults: true,
-      query: null,
+      query: react ? {} : null,
       value: null,
       configuration: { itemsPerPage, page, sort },
       result: data && total ? { data, total } : null
     });
+
+    console.log("react", react);
   }, [page, sort]);
 
   const defaultPagination = () => (

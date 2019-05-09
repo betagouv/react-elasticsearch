@@ -8,21 +8,32 @@ storiesOf("ActiveFilters", module)
   .add("active", () => {
     return (
       <Elasticsearch url={url}>
-        <h1>Display active filters</h1>
-        <pre>{`<ActiveFilters id="active-filters" />`}</pre>
-        Active Filters:
-        <ActiveFilters id="af" />
-        <SearchBox id="main" fields={["TICO"]} initialValue={"chemin"} />
-        <Facet id="autr" fields={["AUTR.keyword"]} initialValue={["auteur inconnu"]} />
-        <Results
-          id="result"
-          item={s => (
+        <div>
+          <div>
+            <h1>Display active filters</h1>
+            <pre>{`<ActiveFilters id="active-filters" />`}</pre>
+            Active Filters:
+            <ActiveFilters id="af" />
+          </div>
+          <div style={{ display: "flex" }}>
             <div>
-              {s.TICO} - {s.AUTR}
+              <Facet id="autr" fields={["AUTR.keyword"]} initialValue={["auteur inconnu"]} />
             </div>
-          )}
-          pagination={() => <></>}
-        />
+            <div>
+              <SearchBox id="main" fields={["TICO"]} initialValue={"chemin"} />
+              <Results
+                id="result"
+                react={["main", "autr"]}
+                item={s => (
+                  <div>
+                    {s.TICO} - {s.AUTR}
+                  </div>
+                )}
+                pagination={() => <></>}
+              />
+            </div>
+          </div>
+        </div>
       </Elasticsearch>
     );
   })
@@ -30,13 +41,14 @@ storiesOf("ActiveFilters", module)
     return (
       <Elasticsearch url={url}>
         <h1>Active filter (change component order)</h1>
-        <Facet id="autr" fields={["AUTR.keyword"]} />
+        <Facet id="autr" react={["main"]} fields={["AUTR.keyword"]} />
         Recherche:
         <SearchBox id="main" fields={["TICO"]} initialValue={"chemin"} />
         Filtres:
         <ActiveFilters id="af" />
         <Results
           id="result"
+          react={["main", "autr"]}
           item={s => (
             <div>
               {s.TICO} - {s.AUTR}

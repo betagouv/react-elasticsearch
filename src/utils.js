@@ -10,12 +10,10 @@ export function msearch(url, msearchData, headers = {}) {
       ...headers
     };
     const body = msearchData.reduce((acc, val) => {
-      console.log(val.id, val.queries);
-
       const [p, q] = [{ preference: val.id }, queryFrom(val.queries)].map(JSON.stringify);
       return `${acc}${p}\n${q}\n`;
     }, "");
-    console.log(body);
+    console.log("body", body);
     const rawResponse = await fetch(`${url}/_msearch`, { method: "POST", headers, body });
     const response = await rawResponse.json();
     resolve(response);
@@ -24,13 +22,12 @@ export function msearch(url, msearchData, headers = {}) {
 
 // Build a query from a Map of queries
 export function queryFrom(queries) {
-  const q = queries.filter(e => !e.query.match_all);
-  if (q.length === 0) {
+  if (queries.length === 0) {
     return { query: { match_all: {} } };
-  } else if (q.length === 1) {
-    return q[0];
+  } else if (queries.length === 1) {
+    return queries[0];
   } else {
-    return mergeQueries(q);
+    return mergeQueries(queries);
     //#https://github.com/appbaseio/reactivecore/blob/master/src/utils/helper.js
     return { query: { match_all: {} } };
   }
@@ -38,15 +35,17 @@ export function queryFrom(queries) {
 }
 
 function mergeQueries(queries) {
-  let query = { query: { bool: { must: [] } } };
+  let query = { query: { bool: { must: [], should: [] } } };
   for (let i = 0; i < queries.length; i++) {
     const q = { ...queries[i] };
 
     if (q.query.bool) {
       if (q.query.bool.must) {
         query.query.bool.must.push(...q.query.bool.must);
-      } else {
-        console.log("SHOULD Not handle yet");
+      }
+      if (q.query.bool.should) {
+        query.query.bool.should.push(...q.query.bool.should);
+        query.query.bool.minimum_should_match = 1;
       }
     } else {
       query.query.bool.must.push(q.query);
@@ -56,8 +55,6 @@ function mergeQueries(queries) {
     delete q.query;
     query = { ...query, ...q };
   }
-
-  console.log("END", query);
   return query;
 }
 

@@ -98,33 +98,28 @@ storiesOf("Similar", module)
         <div>
           <Facet
             seeMore="SEE MORE CUSTOM"
-            placeholder="MY PLACEHOLDER"
-            id="autr"
-            fields={["AUTR.keyword"]}
+            placeholder="DENO"
+            id="deno"
+            fields={["DENO.keyword"]}
             itemsPerBlock={10}
             react={["main"]}
           />
-          {/* <Facet
+          <Facet
             seeMore="SEE MORE CUSTOM"
-            placeholder="MY PLACEHOLDER"
-            id="insee"
-            fields={["INSEE.keyword"]}
+            placeholder="PRODUCTEUR"
+            id="prod"
+            fields={["PRODUCTEUR.keyword"]}
             itemsPerBlock={10}
+            react={["main"]}
           />
           <Facet
             seeMore="SEE MORE CUSTOM"
-            placeholder="MY PLACEHOLDER"
-            id="dpro"
-            fields={["DPRO.keyword"]}
+            placeholder="AUTP"
+            id="autp"
+            fields={["AUTP.keyword"]}
             itemsPerBlock={10}
+            react={["main"]}
           />
-          <Facet
-            seeMore="SEE MORE CUSTOM"
-            placeholder="MY PLACEHOLDER"
-            id="stat"
-            fields={["STAT.keyword"]}
-            itemsPerBlock={10}
-          /> */}
         </div>
         <div>
           <div style={{ paddingBottom: "20px" }}>
@@ -138,7 +133,7 @@ storiesOf("Similar", module)
               </div>
             )}
             pagination={() => <div />}
-            react={["autr", "main", "dpro", "insee", "stat"]}
+            react={["autp", "main", "prod", "deno"]}
           />
         </div>
 

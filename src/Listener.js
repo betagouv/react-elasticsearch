@@ -15,9 +15,6 @@ export default function({ children, onChange, ...rest }) {
     return new Map([...widgets].filter(([, v]) => v[key]).map(([k, v]) => [k, v[key]]));
   }
 
-  const configurableWidgets = widgetThat("needsConfiguration");
-  const facetWidgets = widgetThat("isFacet");
-  const searchWidgets = widgetThat("needsQuery");
   const resultWidgets = widgetThat("react");
   const queries = mapFrom("query");
   const configurations = mapFrom("configuration");
@@ -41,9 +38,12 @@ export default function({ children, onChange, ...rest }) {
     // If you are debugging and your debug path leads you here, you might
     // check configurableWidgets and searchWidgets actually covers
     // the whole list of components that are configurables and queryable.
-    const queriesReady = true; //queries.size === widgets.size;
-    const configurationsReady = configurations.size === configurableWidgets.size;
-    if (true && configurationsReady) {
+    const queriesReady = queries.size === widgets.size;
+    console.log("HEYYYYYYY", queries.size, widgets.size);
+    console.log("queries", queries);
+    console.log("widgets", widgets);
+    // const configurationsReady = configurations.size === configurableWidgets.size;
+    if (queriesReady) {
       // The actual query to ES is deffered, to wait for all effects
       // and context operations before running.
       defer(() => {
@@ -51,6 +51,8 @@ export default function({ children, onChange, ...rest }) {
           type: "setListenerEffect",
           value: () => {
             const msearchData = [];
+            console.log("widgets", widgets);
+            console.log("resultWidgets", resultWidgets);
             resultWidgets.forEach((widget, id) => {
               const queries = [];
               for (let i = 0; i < widget.react.length; i++) {
@@ -66,69 +68,12 @@ export default function({ children, onChange, ...rest }) {
               msearchData.push({ queries, id });
             });
 
-            // resultWidgets.forEach((r, id) => {
-            //   const { itemsPerPage, page, sort } = r.configuration;
-
-            //   msearchData.push({
-            //     query: {
-            //       query: queryFrom(queries),
-            //       size: itemsPerPage,
-            //       from: (page - 1) * itemsPerPage,
-            //       sort
-            //     },
-            //     data: result => result.hits.hits,
-            //     total: result => result.hits.total,
-            //     id
-            //   });
-            // });
-
-            // Fetch data for internal facet components.
-            // facetWidgets.forEach((f, id) => {
-            //   const fields = f.configuration.fields;
-            //   const size = f.configuration.size;
-            //   const filterValue = f.configuration.filterValue;
-            //   const filterValueModifier = f.configuration.filterValueModifier;
-
-            //   // Get the aggs (elasticsearch queries) from fields
-            //   // Dirtiest part, because we build a raw query from various params
-            //   function aggsFromFields() {
-            //     // Remove current query from queries list (do not react to self)
-            //     function withoutOwnQueries() {
-            //       const q = new Map(queries);
-            //       q.delete(id);
-            //       return q;
-            //     }
-            //     // Transform a single field to agg query
-            //     function aggFromField(field) {
-            //       const t = { field, order: { _count: "desc" }, size };
-            //       if (filterValue) {
-            //         t.include = !filterValueModifier
-            //           ? `.*${filterValue}.*`
-            //           : filterValueModifier(filterValue);
-            //       }
-            //       return { [field]: { terms: t } };
-            //     }
-            //     // Actually build the query from fields
-            //     let result = {};
-            //     fields.forEach(f => {
-            //       result = { ...result, ...aggFromField(f) };
-            //     });
-            //     return { query: queryFrom(withoutOwnQueries()), size: 0, aggs: result };
-            //   }
-            //   msearchData.push({
-            //     query: aggsFromFields(),
-            //     data: result => result.aggregations[fields[0]].buckets,
-            //     total: result => result.hits.total,
-            //     id: id
-            //   });
-            // });
-
             // Fetch the data.
             async function fetchData() {
               // Only if there is a query to run.
               if (msearchData.length) {
+                console.log("QUERY", msearchData);
                 const result = await msearch(url, msearchData, headers);
-                console.log("result", result);
                 result.responses.forEach((response, key) => {
                   const widget = widgets.get(msearchData[key].id);
                   widget.response = response;
