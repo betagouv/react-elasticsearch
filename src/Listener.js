@@ -1,21 +1,20 @@
 import React, { useEffect } from "react";
 import { useSharedContext } from "./SharedContextProvider";
-import { msearch, queryFrom, defer } from "./utils";
+import { msearch, queryFrom, defer, isEqual } from "./utils";
 
 // This component needs to be cleaned.
 export default function({ children, onChange, ...rest }) {
   const [{ url, listenerEffect, widgets, headers }, dispatch] = useSharedContext();
 
-  // We need to prepare some data in each render.
-  // This needs to be done out of the effect function.
-  function widgetThat(key) {
-    return new Map([...widgets].filter(([, v]) => v[key]));
-  }
+  // // We need to prepare some data in each render.
+  // // This needs to be done out of the effect function.
+  // function widgetThat(key) {
+  //   return new Map([...widgets].filter(([, v]) => v[key]));
+  // }
   function mapFrom(key) {
     return new Map([...widgets].filter(([, v]) => v[key]).map(([k, v]) => [k, v[key]]));
   }
 
-  const resultWidgets = widgetThat("react");
   const queries = mapFrom("query");
   const configurations = mapFrom("configuration");
   const values = mapFrom("value");
@@ -33,17 +32,13 @@ export default function({ children, onChange, ...rest }) {
     // Run the deferred (thx algolia) listener effect.
     listenerEffect && listenerEffect();
   });
+
   // Run effect on update for each change in queries or configuration.
   useEffect(() => {
     // If you are debugging and your debug path leads you here, you might
     // check configurableWidgets and searchWidgets actually covers
     // the whole list of components that are configurables and queryable.
-    const queriesReady = queries.size === widgets.size;
-    console.log("HEYYYYYYY", queries.size, widgets.size);
-    console.log("queries", queries);
-    console.log("widgets", widgets);
-    // const configurationsReady = configurations.size === configurableWidgets.size;
-    if (queriesReady) {
+    if (true) {
       // The actual query to ES is deffered, to wait for all effects
       // and context operations before running.
       defer(() => {
@@ -51,9 +46,11 @@ export default function({ children, onChange, ...rest }) {
           type: "setListenerEffect",
           value: () => {
             const msearchData = [];
-            console.log("widgets", widgets);
-            console.log("resultWidgets", resultWidgets);
-            resultWidgets.forEach((widget, id) => {
+            widgets.forEach((widget, id) => {
+              if (!widget.react) {
+                //only widget which reacts to something need to have queries
+                return;
+              }
               const queries = [];
               for (let i = 0; i < widget.react.length; i++) {
                 const w = widgets.get(widget.react[i]);
@@ -72,13 +69,11 @@ export default function({ children, onChange, ...rest }) {
             async function fetchData() {
               // Only if there is a query to run.
               if (msearchData.length) {
-                console.log("QUERY", msearchData);
                 const result = await msearch(url, msearchData, headers);
                 result.responses.forEach((response, key) => {
                   const widget = widgets.get(msearchData[key].id);
                   widget.response = response;
-                  // Update widget
-                  dispatch({ type: "setWidget", key: msearchData[key].id, ...widget });
+                  dispatch({ type: "setWidget", key: msearchData[key].id, ...widget }); // Update widget
                 });
               }
             }
@@ -89,7 +84,9 @@ export default function({ children, onChange, ...rest }) {
         });
       });
     }
-  }, [JSON.stringify(Array.from(queries)), JSON.stringify(Array.from(configurations))]);
+  }, [JSON.stringify(Array.from(queries))]);
+  //TODO @raph I added isEqual function in utils. How can I use it to run the hook without having to store  ? It seems the useEffect internaly compare the current and the previous value
 
+  console.log(children)
   return <div {...rest}>{children}</div>;
 }

@@ -23,7 +23,6 @@ storiesOf("ActiveFilters", module)
               <SearchBox id="main" fields={["TICO"]} initialValue={"chemin"} />
               <Results
                 id="result"
-                react={["main", "autr"]}
                 item={s => (
                   <div>
                     {s.TICO} - {s.AUTR}
@@ -48,7 +47,6 @@ storiesOf("ActiveFilters", module)
         <ActiveFilters id="af" />
         <Results
           id="result"
-          react={["main", "autr"]}
           item={s => (
             <div>
               {s.TICO} - {s.AUTR}

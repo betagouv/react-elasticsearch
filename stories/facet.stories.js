@@ -87,4 +87,51 @@ storiesOf("Facet", module)
         />
       </Elasticsearch>
     );
+  })
+  .add("test", () => {
+    return (
+      <Elasticsearch url={url} style={{ display: "flex" }}>
+        <div>
+          <Facet
+            seeMore="SEE MORE CUSTOM"
+            placeholder="DENO"
+            id="deno"
+            fields={["DENO.keyword"]}
+            itemsPerBlock={10}
+            react={["main"]}
+          />
+          <Facet
+            seeMore="SEE MORE CUSTOM"
+            placeholder="PRODUCTEUR"
+            id="prod"
+            fields={["PRODUCTEUR.keyword"]}
+            itemsPerBlock={10}
+            react={["main"]}
+          />
+          <Facet
+            seeMore="SEE MORE CUSTOM"
+            placeholder="AUTP"
+            id="autp"
+            fields={["AUTP.keyword"]}
+            itemsPerBlock={10}
+            react={["main"]}
+          />
+        </div>
+        <div>
+          <div style={{ paddingBottom: "20px" }}>
+            <SearchBox id="main" fields={["TICO"]} />
+          </div>
+          <Results
+            id="result"
+            item={(source, score, id) => (
+              <div key={id}>
+                <b>{source.TICO}</b>- score: {score}
+              </div>
+            )}
+            pagination={() => <div />}
+            react={["autp", "main", "prod", "deno"]}
+          />
+        </div>
+      </Elasticsearch>
+    );
   });

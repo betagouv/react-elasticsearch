@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import { useSharedContext } from "./SharedContextProvider";
 
 // The main objective is to have this display:
 //
@@ -16,13 +18,36 @@ function buttons(page, max) {
   return [1, "x", max - 4, max - 3, max - 2, max - 1, max];
 }
 
-export default function({ onChange, total, itemsPerPage, page }) {
+export default function({ onChange, total, itemsPerPage, page, id }) {
+  const [{}, dispatch] = useSharedContext();
+  console.log("1")
   const max = Math.min(Math.ceil(total / itemsPerPage), 10000 / itemsPerPage);
+
+  function createQuery() {
+    const query = {
+      from: page,
+      size: itemsPerPage,
+      query: {
+        match_all: {}
+      }
+    };
+    return query;
+  }
+
+  useEffect(() => {
+    dispatch({
+      type: "setWidget",
+      key: id,
+      react: null,
+      query: createQuery(),
+      value: null
+    });
+  }, [page, itemsPerPage, total]);
 
   return (
     <ul className="react-es-pagination">
       {buttons(page, max)
-        .filter(e => Number.isInteger(e) ? e <= max : e)
+        .filter(e => (Number.isInteger(e) ? e <= max : e))
         .map(i => {
           if (Number.isInteger(i)) {
             return (

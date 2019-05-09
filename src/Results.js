@@ -16,46 +16,45 @@ export default function({
   react
 }) {
   const [{ widgets }, dispatch] = useSharedContext();
-  const [initialization, setInitialization] = useState(true);
+  // const [initialization, setInitialization] = useState(true);
   const [page, setPage] = useState(initialPage);
   const widget = widgets.get(id);
 
   const data = getHits(widget);
   const total = getTotal(widget);
+  const widgetCount = widgets.size;
 
-  //If no react, react to all I tries, I failed
-  // console.log("REACT TO ALL", widgets);
-  // if (!react) {
-  //   react = [...widgets].reduce((acc, v) => {
-  //     if (v[0].indexOf("_facet") === -1 && v[0] !== id) {
-  //       acc.push(v[0]);
-  //     }
-  //     return acc;
-  //   }, []);
-  // }
+  function getDefautReactWidgets() {
+    if (react) {
+      return react;
+    }
+    return [...widgets].reduce((acc, v) => {
+      if (v[0].indexOf("_facet") === -1 && v[0] !== id) {
+        acc.push(v[0]);
+      }
+      return acc;
+    }, []);
+  }
 
   useEffect(() => {
-    setPage(initialization ? initialPage : 1);
-    return () => setInitialization(false);
-  }, [total]);
-
-  // Update context with page (and itemsPerPage)
-  useEffect(() => {
+    const r = getDefautReactWidgets();
     dispatch({
       type: "setWidget",
       key: id,
-      react,
-      query: react ? {} : null,
-      value: null,
-      configuration: { itemsPerPage, page, sort },
-      result: data && total ? { data, total } : null
+      react: r,
+      query: {},
+      value: null
     });
-
-    console.log("react", react);
-  }, [page, sort]);
+  }, [widgetCount]);
 
   const defaultPagination = () => (
-    <Pagination onChange={p => setPage(p)} total={total} itemsPerPage={itemsPerPage} page={page} />
+    <Pagination
+      id="pagination"
+      onChange={p => setPage(p)}
+      total={total}
+      itemsPerPage={itemsPerPage}
+      page={page}
+    />
   );
 
   return (

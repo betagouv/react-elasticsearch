@@ -1,21 +1,22 @@
 export function customQuery(query) {
   if (!query) {
-    return { match_all: {} };
+    return { query: { match_all: {} } };
   }
-  return { multi_match: { query, type: "phrase", fields: ["TICO"] } };
+  return { query: { multi_match: { query, type: "phrase", fields: ["TICO"] } } };
 }
-
 
 export function customQueryMovie(query) {
   if (!query) {
-    return { match_all: {} };
+    return { query: { match_all: {} } };
   }
   return {
-    bool: {
-      should: [
-        { multi_match: { query, type: "phrase", fields: ["overview", "original_title"] } },
-        { multi_match: { query, type: "phrase_prefix", fields: ["original_title"] } }
-      ]
+    query: {
+      bool: {
+        should: [
+          { multi_match: { query, type: "phrase", fields: ["overview", "original_title"] } },
+          { multi_match: { query, type: "phrase_prefix", fields: ["original_title"] } }
+        ]
+      }
     }
   };
 }

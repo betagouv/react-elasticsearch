@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { storiesOf } from "@storybook/react";
-import { Elasticsearch, Results } from "../src";
+import { Elasticsearch, Results, Sort } from "../src";
 import { url } from "./utils";
 
 storiesOf("Results", module)
@@ -47,31 +47,11 @@ storiesOf("Results", module)
   .add("sortable (DMIS desc)", () => <WithSortable />);
 
 function WithSortable() {
-  const [sortKey, setSortKey] = useState("DMIS.keyword");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [sortQuery, setSortQuery] = useState([{ [sortKey]: { order: sortOrder } }]);
-
-  useEffect(() => {
-    setSortQuery([{ [sortKey]: { order: sortOrder } }]);
-  }, [sortKey, sortOrder]);
-
   return (
     <Elasticsearch url={url}>
-      Sort by:{" "}
-      <select onChange={e => setSortKey(e.target.value)} value={sortKey}>
-        {["AUTR.keyword", "DMIS.keyword", "DMAJ.keyword", "TICO.keyword"].map(e => (
-          <option key={e} value={e}>
-            {e.replace(".keyword", "")}
-          </option>
-        ))}
-      </select>
-      <select onChange={e => setSortOrder(e.target.value)} value={sortOrder}>
-        <option value="asc">asc</option>
-        <option value="desc">desc</option>
-      </select>
+      <Sort id="sort" />
       <Results
         id="result"
-        sort={sortQuery}
         item={source => (
           <div>
             {source.DMIS} - {source.TICO.substr(0, 50)}

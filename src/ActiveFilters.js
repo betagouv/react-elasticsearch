@@ -6,8 +6,6 @@ export default function({ item }) {
   // Get all values from widgets.
   const values = new Map([...widgets].filter(([, v]) => v.value).map(([k, v]) => [k, v.value]));
 
-  console.log("values", values);
-
   // On filter remove, update widget properties.
   function removeFilter(id) {
     const widget = widgets.get(id);

@@ -10,13 +10,13 @@ export default function({ children, url, onChange, headers, ...rest }) {
     const { widgets } = state;
     switch (action.type) {
       case "setWidget":
+        if (!action.key) {
+          console.error("All your components should have an unique Id");
+          return state;
+        }
         const widget = {
-          needsQuery: action.needsQuery,
-          needsConfiguration: action.needsConfiguration,
-          isFacet: action.isFacet,
           query: action.query,
           value: action.value,
-          configuration: action.configuration,
           react: action.react,
           response: action.response
         };

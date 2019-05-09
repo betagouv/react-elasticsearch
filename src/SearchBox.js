@@ -35,14 +35,8 @@ export default function({ customQuery, fields, id, initialValue, placeholder }) 
     dispatch({
       type: "setWidget",
       key: id,
-      needsQuery: true,
-      needsConfiguration: false,
-      isFacet: false,
-      wantResults: false,
       query: queryFromValue(v),
-      value: v,
-      configuration: null,
-      result: null
+      value: v
     });
   }
 
