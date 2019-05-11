@@ -51,7 +51,6 @@ export default function Rule({ fields, operators, combinators, ...props }) {
               [{ queries: [query], id: "queryBuilder" }],
               headers
             );
-            console.log("suggestions", suggestions);
             setSuggestions(suggestions.responses[0].aggregations[field].buckets.map(e => e.key));
           }}
           onSuggestionsClearRequested={() => setSuggestions([])}
