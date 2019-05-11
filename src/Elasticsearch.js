@@ -14,12 +14,14 @@ export default function({ children, url, onChange, headers, ...rest }) {
           console.error("All your components should have an unique Id");
           return state;
         }
+        const a = widgets.get(action.key);
         const widget = {
           query: action.query,
           value: action.value,
           react: action.react,
-          response: action.response
+          response: action.response || (a && a.response)
         };
+
         widgets.set(action.key, widget);
         return { ...state, widgets };
       case "deleteWidget":
