@@ -12,19 +12,11 @@ export default function({ children, onChange, ...rest }) {
   }
 
   const queries = mapFrom("query");
-  const configurations = mapFrom("configuration");
   const values = mapFrom("value");
 
   useEffect(() => {
     // Apply custom callback effect on every change, useful for query params.
-    if (onChange) {
-      // Add pages to params.
-      const pages = [...configurations]
-        .filter(([, v]) => v.page && v.page > 1)
-        .map(([k, v]) => [`${k}Page`, v.page]);
-      // Run the change callback with all params.
-      onChange(new Map([...pages, ...values]));
-    }
+    onChange(values);
     // Run the deferred (thx algolia) listener effect.
     listenerEffect && listenerEffect();
   });
@@ -57,8 +49,6 @@ export default function({ children, onChange, ...rest }) {
             }
             queryMap.set(id, arr);
           });
-
-          console.log([...queryMap]);
 
           function queriesToExec() {
             const arr = [];
