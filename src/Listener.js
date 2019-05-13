@@ -16,7 +16,9 @@ export default function({ children, onChange, ...rest }) {
 
   useEffect(() => {
     // Apply custom callback effect on every change, useful for query params.
-    onChange(values);
+    if (onChange) {
+      onChange(values);
+    }
     // Run the deferred (thx algolia) listener effect.
     listenerEffect && listenerEffect();
   });
