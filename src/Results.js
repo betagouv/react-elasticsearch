@@ -24,28 +24,27 @@ export default function({
   const total = getTotal(widget);
   const widgetCount = widgets.size;
 
-  function getDefautReactWidgets() {
-    if (react) {
-      return react;
-    }
-    return [...widgets].reduce((acc, v) => {
-      if (v[0] !== id) {
-        acc.push(v[0]);
-      }
-      return acc;
-    }, []);
-  }
+  // function getDefautReactWidgets() {
+  //   if (react) {
+  //     return react;
+  //   }
+  //   return [...widgets].reduce((acc, v) => {
+  //     if (v[0] !== id) {
+  //       acc.push(v[0]);
+  //     }
+  //     return acc;
+  //   }, []);
+  // }
 
   useEffect(() => {
-    const r = getDefautReactWidgets();
     dispatch({
       type: "setWidget",
       key: id,
-      react: r,
+      needsResults: true,
       query: {},
       value: null
     });
-  }, [widgetCount]);
+  }, []);
 
   const defaultPagination = () => (
     <Pagination
