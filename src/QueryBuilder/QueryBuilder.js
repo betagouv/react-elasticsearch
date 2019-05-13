@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSharedContext } from "../SharedContextProvider";
-import { defaultOperators, defaultCombinators, mergedQueries, ruleQuery } from "./utils";
+import { defaultOperators, defaultCombinators, mergedQueries } from "./utils";
 import Rule from "./Rule";
 
 export default function QueryBuilder({
@@ -26,7 +26,10 @@ export default function QueryBuilder({
 
   useEffect(() => {
     const queries = mergedQueries(
-      rules.map(r => ({ ...r, query: ruleQuery(r.field, r.operator, r.value) }))
+      rules.map(r => ({
+        ...r,
+        query: operators.find(o => o.value === r.operator).query(r.field, r.value)
+      }))
     );
     dispatch({
       type: "setWidget",
