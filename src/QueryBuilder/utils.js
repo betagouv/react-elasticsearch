@@ -23,31 +23,31 @@ export const defaultOperators = [
     value: "!=",
     text: "not equals",
     useInput: true,
-    query: (key, value) => ({ must_not: { term: { [key]: value } } })
+    query: (key, value) => (value ? { bool: {must_not: { term: { [key]: value } } }} : null)
   },
   {
     value: ">=",
     text: "greater than or equals to",
     useInput: true,
-    query: (key, value) => ({ range: { [key]: { gte: value } } })
+    query: (key, value) => (value ? { range: { [key]: { gte: value } } } : null)
   },
   {
     value: "<=",
     text: "lesser than or equals to",
     useInput: true,
-    query: (key, value) => ({ range: { [key]: { lte: value } } })
+    query: (key, value) => (value ? { range: { [key]: { lte: value } } } : null)
   },
   {
     value: ">",
     text: "greater than",
     useInput: true,
-    query: (key, value) => ({ range: { [key]: { lt: value } } })
+    query: (key, value) => (value ? { range: { [key]: { lt: value } } } : null)
   },
   {
     value: "<",
     text: "lesser than",
     useInput: true,
-    query: (key, value) => ({ range: { [key]: { gt: value } } })
+    query: (key, value) => (value ? { range: { [key]: { gt: value } } } : null)
   },
   {
     value: "∃",
@@ -82,19 +82,20 @@ export const defaultOperators = [
     value: "*",
     text: "contains",
     useInput: true,
-    query: (key, value) => ({ wildcard: { [key]: `*${value}*` } })
+    query: (key, value) => (value ? { wildcard: { [key]: `*${value}*` } } : null)
   },
   {
     value: "!*",
     text: "does not contains",
     useInput: true,
-    query: (key, value) => ({ bool: { must_not: { wildcard: { [key]: `*${value}*` } } } })
+    query: (key, value) =>
+      value ? { bool: { must_not: { wildcard: { [key]: `*${value}*` } } } } : null
   },
   {
     value: "^",
     text: "start with",
     useInput: true,
-    query: (key, value) => ({ wildcard: { [key]: `${value}*` } })
+    query: (key, value) => (value ? { wildcard: { [key]: `${value}*` } } : null)
   }
 ];
 
