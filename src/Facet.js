@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getAggregations } from "./utils";
+import { getAggregations, msearch } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
-
 export default function({
   fields,
   id,
@@ -10,34 +9,18 @@ export default function({
   placeholder,
   showFilter = true,
   filterValueModifier,
-  itemsPerBlock,
-  react = []
+  itemsPerBlock
 }) {
-  const [{ widgets }, dispatch] = useSharedContext();
+  const [{ widgets, url, headers }, dispatch] = useSharedContext();
   // Current filter (search inside facet value).
   const [filterValue, setFilterValue] = useState("");
+  // Display suggestions
+  const [suggestions, setSuggestions] = useState([]);
   // Number of itemns displayed in facet.
   const [size, setSize] = useState(itemsPerBlock || 5);
   // The actual selected items in facet.
   const [value, setValue] = useState(initialValue || []);
   // Data from internal queries (Elasticsearch queries are performed via Listener)
-
-  const aggs = getAggregations(widgets.get(`${id}_facet`), "facet");
-
-  function getAggsQuery() {
-    const query = {};
-    query.size = 0;
-    query.aggregations = {
-      facet: { terms: { field: fields[0], size, order: { _count: "desc" } } }
-    };
-    if (filterValue) {
-      query.aggregations.facet.terms.include = !filterValueModifier
-        ? `.*${filterValue}.*`
-        : filterValueModifier(filterValue);
-    }
-    query.query = { match_all: {} };
-    return query;
-  }
 
   function getQuery() {
     if (!value || !value.length) {
@@ -53,15 +36,26 @@ export default function({
     return { query: { bool: { should: arr } } };
   }
 
+  async function fetchAggregations() {
+    const query = {};
+    query.size = 0;
+    query.aggregations = {
+      facet: { terms: { field: fields[0], size, order: { _count: "desc" } } }
+    };
+    if (filterValue) {
+      query.aggregations.facet.terms.include = !filterValueModifier
+        ? `.*${filterValue}.*`
+        : filterValueModifier(filterValue);
+    }
+    query.query = { match_all: {} };
+    const responses = await msearch(url, [{ queries: [query], id: `facet` }], headers);
+    const aggs = getAggregations(responses, `facet`);
+    setSuggestions(aggs);
+  }
+
   // Update facets
   useEffect(() => {
-    dispatch({
-      type: "setWidget",
-      key: `${id}_facet`,
-      react: [`${id}_facet`, ...react],
-      query: getAggsQuery(),
-      value: ""
-    });
+    fetchAggregations();
   }, [size, filterValue]);
 
   // Update Query
@@ -69,7 +63,6 @@ export default function({
     dispatch({
       type: "setWidget",
       key: `${id}`,
-      // react: [id],
       query: getQuery(),
       value
     });
@@ -101,7 +94,7 @@ export default function({
           }}
         />
       ) : null}
-      {aggs.map(item => (
+      {suggestions.map(item => (
         <label key={item.key}>
           <input
             type="checkbox"
@@ -117,7 +110,7 @@ export default function({
           {item.key} ({item.doc_count})
         </label>
       ))}
-      {aggs.length === size ? (
+      {suggestions.length === size ? (
         <button onClick={() => setSize(size + (itemsPerBlock || 5))}>
           {seeMore || "see more"}
         </button>

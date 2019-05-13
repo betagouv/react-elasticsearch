@@ -29,7 +29,7 @@ export default function({
       return react;
     }
     return [...widgets].reduce((acc, v) => {
-      if (v[0].indexOf("_facet") === -1 && v[0] !== id) {
+      if (v[0] !== id) {
         acc.push(v[0]);
       }
       return acc;

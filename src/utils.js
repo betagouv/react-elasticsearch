@@ -1,5 +1,6 @@
 import fetch from "unfetch";
 import qs from "qs";
+import { cpus } from "os";
 
 // Search with msearch to elasticsearch instance
 // Todo reject.
@@ -93,7 +94,7 @@ export function fromUrlQueryString(str) {
       try {
         return [k, JSON.parse(v)];
       } catch (e) {
-        return [k, v]
+        return [k, v];
       }
     })
   ]);
@@ -107,13 +108,14 @@ export function getHits(widget) {
   return (widget && widget.response && widget.response.hits && widget.response.hits.hits) || [];
 }
 
-export function getAggregations(widget, name) {
+export function getAggregations(res, name) {
   return (
-    (widget &&
-      widget.response &&
-      widget.response.aggregations &&
-      widget.response.aggregations[name] &&
-      widget.response.aggregations[name].buckets) ||
+    (res &&
+      res.responses &&
+      res.responses[0] &&
+      res.responses[0].aggregations &&
+      res.responses[0].aggregations[name] &&
+      res.responses[0].aggregations[name].buckets) ||
     []
   );
 }
