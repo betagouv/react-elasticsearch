@@ -7,7 +7,7 @@ import Listener from "./Listener";
 import ActiveFilters from "./ActiveFilters";
 import QueryBuilder from "./QueryBuilder/QueryBuilder";
 import CustomWidget from "./CustomWidget";
-import { fromUrlQueryString, toUrlQueryString } from "./utils";
+import { fromUrlQueryString, toUrlQueryString, msearch } from "./utils";
 
 export {
   Elasticsearch,
@@ -20,5 +20,6 @@ export {
   toUrlQueryString,
   ActiveFilters,
   QueryBuilder,
-  CustomWidget
+  CustomWidget,
+  msearch
 };
