@@ -1,6 +1,6 @@
 {
   "name": "react-elasticsearch",
-  "version": "1.18.1",
+  "version": "1.18.2",
   "description": "",
   "main": "dist/main.js",
   "scripts": {
