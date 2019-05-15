@@ -36,7 +36,7 @@ storiesOf("QueryBuilder", module)
         useInput: true,
         query: (key, value) => (value ? { regexp: { [key]: regexify(value) } } : null),
         suggestionQuery: (field, value) => {
-          const lol = {
+          return {
             query: { match_all: {} },
             aggs: {
               [field]: {
@@ -45,8 +45,6 @@ storiesOf("QueryBuilder", module)
             },
             size: 0
           };
-          console.log(lol);
-          return lol;
         }
       }
     ];
