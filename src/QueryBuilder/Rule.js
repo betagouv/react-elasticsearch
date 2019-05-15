@@ -43,8 +43,14 @@ export default function Rule({ fields, operators, combinators, ...props }) {
         <Autosuggest
           suggestions={suggestions}
           onSuggestionsFetchRequested={async ({ value }) => {
-            const terms = { field, include: `.*${value}.*`, order: { _count: "desc" }, size: 10 };
-            const query = { query: { match_all: {} }, aggs: { [field]: { terms } }, size: 0 };
+            let query;
+            const suggestionQuery = operators.find(o => o.value === operator).suggestionQuery;
+            if (suggestionQuery) {
+              query = suggestionQuery(field, value);
+            } else {
+              const terms = { field, include: `.*${value}.*`, order: { _count: "desc" }, size: 10 };
+              query = { query: { match_all: {} }, aggs: { [field]: { terms } }, size: 0 };
+            }
             const suggestions = await msearch(url, [{ query, id: "queryBuilder" }], headers);
             setSuggestions(suggestions.responses[0].aggregations[field].buckets.map(e => e.key));
           }}

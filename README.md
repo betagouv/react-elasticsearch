@@ -1,6 +1,6 @@
 # React Elasticsearch
 
-Opinionated yet customizable UI components for building data-driven search experiences
+UI components for building data-driven search experiences
 
 ## Install
 
