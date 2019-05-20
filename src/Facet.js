@@ -10,7 +10,8 @@ export default function({
   placeholder,
   showFilter = true,
   filterValueModifier,
-  itemsPerBlock
+  itemsPerBlock,
+  items
 }) {
   const [{ widgets }, dispatch] = useSharedContext();
   // Current filter (search inside facet value).
@@ -54,6 +55,19 @@ export default function({
     return !widgets.get(id) || widgets.get(id).value == value;
   }
 
+  // On checkbox status change, add or remove current agg to selected
+  function handleChange(item, checked) {
+    const newValue = checked
+      ? [...new Set([...value, item.key])]
+      : value.filter(f => f !== item.key);
+    setValue(newValue);
+  }
+
+  // Is current item checked?
+  function isChecked(item) {
+    return value.includes(item.key);
+  }
+
   return (
     <div className="react-es-facet">
       {showFilter ? (
@@ -66,24 +80,22 @@ export default function({
           }}
         />
       ) : null}
-      {data.map(item => (
-        <label key={item.key}>
-          <input
-            type="checkbox"
-            checked={value.includes(item.key)}
-            onChange={e => {
-              // On checkbox status change, add or remove current agg to selected
-              const newValue = e.target.checked
-                ? [...new Set([...value, item.key])]
-                : value.filter(f => f !== item.key);
-              setValue(newValue);
-            }}
-          />
-          {item.key} ({item.doc_count})
-        </label>
-      ))}
+      {items
+        ? items(data, { handleChange, isChecked })
+        : data.map(item => (
+            <label key={item.key}>
+              <input
+                type="checkbox"
+                checked={isChecked(item)}
+                onChange={e => handleChange(item, e.target.checked)}
+              />
+              {item.key} ({item.doc_count})
+            </label>
+          ))}
       {data.length === size ? (
-        <button onClick={() => setSize(size + (itemsPerBlock || 5))}>{seeMore || "see more"}</button>
+        <button onClick={() => setSize(size + (itemsPerBlock || 5))}>
+          {seeMore || "see more"}
+        </button>
       ) : null}
     </div>
   );

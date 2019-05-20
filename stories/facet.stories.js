@@ -68,7 +68,6 @@ storiesOf("Facet", module)
               </div>
             ))
           }
-          
         />
       </Elasticsearch>
     );
@@ -91,6 +90,38 @@ storiesOf("Facet", module)
               </div>
             ))
           }
+        />
+      </Elasticsearch>
+    );
+  })
+  .add("facet with custom render items", () => {
+    return (
+      <Elasticsearch url={url}>
+        <SearchBox id="main" fields={["TICO"]} />
+        <Facet
+          id="autr"
+          fields={["AUTR.keyword"]}
+          items={(data, { handleChange, isChecked }) => {
+            return data.map(item => (
+              <div
+                style={{ color: isChecked(item) ? "green" : "black" }}
+                onClick={() => handleChange(item, !isChecked(item))}
+              >
+                -> {item.key}
+              </div>
+            ));
+          }}
+        />
+        <Results
+          id="result"
+          items={data =>
+            data.map(({ _source: s, _id }) => (
+              <div key={_id}>
+                {s.TICO} - {s.AUTR}
+              </div>
+            ))
+          }
+          pagination={() => <></>}
         />
       </Elasticsearch>
     );
