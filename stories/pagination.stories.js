@@ -13,7 +13,10 @@ storiesOf("Pagination", module).add("with various status", () => {
   return (
     <div>
       {paginations}
+      <h3>On page 1</h3>
       <Pagination onChange={action("page changed")} total={11} itemsPerPage={5} page={1} />
+      <h3>On page 5</h3>
+      <Pagination onChange={action("page changed")} total={25} itemsPerPage={5} page={5} />
     </div>
   );
 });
