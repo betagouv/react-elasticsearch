@@ -9,11 +9,13 @@ storiesOf("Results", module)
       <Elasticsearch url={url}>
         <Results
           id="result"
-          item={(source, score, id) => (
-            <div>
-              <b>{source.TICO}</b> - score: {score} - id: {id}
-            </div>
-          )}
+          items={data =>
+            data.map(({ _source, _id, _score }) => (
+              <div key={_id}>
+                <b>{_source.TICO}</b> - score: {_score} - id: {_id}
+              </div>
+            ))
+          }
         />
       </Elasticsearch>
     );
@@ -23,7 +25,13 @@ storiesOf("Results", module)
       <Elasticsearch url={url}>
         <Results
           id="result"
-          item={source => <div>{source.TICO}</div>}
+          items={data =>
+            data.map(({ _source, _id, _score }) => (
+              <div key={_id}>
+                <b>{_source.TICO}</b> - score: {_score} - id: {_id}
+              </div>
+            ))
+          }
           pagination={(total, itemsPerPage, page) => (
             <div style={{ color: "green" }}>
               Total : {total} - ItemsPerPage : {itemsPerPage} - Page: {page} CUSTOM!
@@ -38,7 +46,13 @@ storiesOf("Results", module)
       <Elasticsearch url={url}>
         <Results
           id="result"
-          item={source => <div>{source.TICO}</div>}
+          items={data =>
+            data.map(({ _source, _id, _score }) => (
+              <div key={_id}>
+                <b>{_source.TICO}</b> - score: {_score} - id: {_id}
+              </div>
+            ))
+          }
           stats={total => <div style={{ color: "green" }}>{total} results CUSTOM!</div>}
         />
       </Elasticsearch>
@@ -72,11 +86,13 @@ function WithSortable() {
       <Results
         id="result"
         sort={sortQuery}
-        item={source => (
-          <div>
-            {source.DMIS} - {source.TICO.substr(0, 50)}
-          </div>
-        )}
+        items={data =>
+          data.map(({ _source, _id }) => (
+            <div key={_id}>
+              {_source.DMIS} - {_source.TICO.substr(0, 50)}
+            </div>
+          ))
+        }
       />
     </Elasticsearch>
   );

@@ -16,11 +16,13 @@ storiesOf("ActiveFilters", module)
         <Facet id="autr" fields={["AUTR.keyword"]} initialValue={["auteur inconnu"]} />
         <Results
           id="result"
-          item={s => (
-            <div>
-              {s.TICO} - {s.AUTR}
-            </div>
-          )}
+          items={data =>
+            data.map(({ _source: s, _id }) => (
+              <div key={_id}>
+                {s.TICO} - {s.AUTR}
+              </div>
+            ))
+          }
           pagination={() => <></>}
         />
       </Elasticsearch>
@@ -37,11 +39,13 @@ storiesOf("ActiveFilters", module)
         <ActiveFilters id="af" />
         <Results
           id="result"
-          item={s => (
-            <div>
-              {s.TICO} - {s.AUTR}
-            </div>
-          )}
+          items={data =>
+            data.map(({ _source: s, _id }) => (
+              <div key={_id}>
+                {s.TICO} - {s.AUTR}
+              </div>
+            ))
+          }
         />
       </Elasticsearch>
     );

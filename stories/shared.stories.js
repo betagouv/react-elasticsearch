@@ -22,11 +22,13 @@ storiesOf("CustomWidget", module).add("active", () => {
       </CustomWidget>
       <Results
         id="result"
-        item={s => (
-          <div>
-            {s.TICO} - {s.AUTR}
-          </div>
-        )}
+        items={data =>
+          data.map(({ _source: s, _id }) => (
+            <div key={_id}>
+              {s.TICO}
+            </div>
+          ))
+        }
         pagination={() => <></>}
       />
     </Elasticsearch>

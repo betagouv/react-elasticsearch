@@ -24,11 +24,13 @@ storiesOf("Elasticsearch", module)
         </div>
         <Results
           id="result"
-          item={(source, score, id) => (
-            <div key={id}>
-              <b>{source.TICO}</b> - score: {score}
-            </div>
-          )}
+          items={data =>
+            data.map(({ _source, _score, _id }) => (
+              <div key={_id}>
+                <b>{_source.TICO}</b> - score: {_score}
+              </div>
+            ))
+          }
         />
       </Elasticsearch>
     );
@@ -45,15 +47,17 @@ storiesOf("Elasticsearch", module)
         <SearchBox id="main" customQuery={customQueryMovie} />
         <Results
           id="result"
-          item={(source, score, id) => (
-            <div key={id}>
-              <img src={source.poster_path}></img>
-              <b>
-                {source.original_title} - {source.tagline}
-              </b>{" "}
-              - score: {score}
-            </div>
-          )}
+          items={data =>
+            data.map(({ _source, _score, _id }) => (
+              <div key={_id}>
+                <img src={_source.poster_path} />
+                <b>
+                  {_source.original_title} - {_source.tagline}
+                </b>{" "}
+                - score: {_score}
+              </div>
+            ))
+          }
         />
       </Elasticsearch>
     );
@@ -71,14 +75,14 @@ function WithUrlParams() {
       }}
     >
       <div>Params: {queryString}</div>
-      <SearchBox id="main" fields={["TICO"]}  initialValue={initialValues.get("main")} />
+      <SearchBox id="main" fields={["TICO"]} initialValue={initialValues.get("main")} />
       <hr />
       <Facet id="author" fields={["AUTR.keyword"]} />
       <ActiveFilters id="af" />
       <Results
         id="result"
         initialPage={initialValues.get("resultPage")}
-        item={(s, _s, id) => <div key={id}>{s.TICO}</div>}
+        items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
       />
     </Elasticsearch>
   );

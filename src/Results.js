@@ -4,7 +4,7 @@ import Pagination from "./Pagination";
 
 // Pagination, informations about results (like "30 results")
 // and size (number items per page) are customizable.
-export default function({ itemsPerPage, initialPage = 1, pagination, stats, item, id, sort }) {
+export default function({ itemsPerPage, initialPage = 1, pagination, stats, items, id, sort }) {
   const [{ widgets }, dispatch] = useSharedContext();
   const [initialization, setInitialization] = useState(true);
   const [page, setPage] = useState(initialPage);
@@ -41,7 +41,7 @@ export default function({ itemsPerPage, initialPage = 1, pagination, stats, item
   return (
     <div className="react-es-results">
       {stats ? stats(total) : <>{total} results</>}
-      {data.map(r => item(r._source, r._score, r._id))}
+      {items(data)}
       {pagination ? pagination(total, itemsPerPage, page, setPage) : defaultPagination()}
     </div>
   );

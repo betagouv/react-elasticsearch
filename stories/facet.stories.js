@@ -37,11 +37,13 @@ storiesOf("Facet", module)
         <CollapsableFacet id="autr" fields={["AUTR.keyword"]} />
         <Results
           id="result"
-          item={(s, _t, id) => (
-            <div key={id}>
-              {s.TICO} - {s.AUTR}
-            </div>
-          )}
+          items={data =>
+            data.map(({ _source: s, _id }) => (
+              <div key={_id}>
+                {s.TICO} - {s.AUTR}
+              </div>
+            ))
+          }
           pagination={() => <></>}
         />
       </Elasticsearch>
@@ -59,11 +61,14 @@ storiesOf("Facet", module)
         />
         <Results
           id="result"
-          item={(source, score, id) => (
-            <div key={id}>
-              <b>{source.TICO}</b> - score: {score}
-            </div>
-          )}
+          items={data =>
+            data.map(({ _source, _id, _score }) => (
+              <div key={_id}>
+                {_source.TICO} - score: {_score}
+              </div>
+            ))
+          }
+          
         />
       </Elasticsearch>
     );
@@ -79,11 +84,13 @@ storiesOf("Facet", module)
         />
         <Results
           id="result"
-          item={(source, score, id) => (
-            <div key={id}>
-              <b>{source.TICO}</b> - score: {score}
-            </div>
-          )}
+          items={data =>
+            data.map(({ _source, _id, _score }) => (
+              <div key={_id}>
+                {_source.TICO} - score: {_score}
+              </div>
+            ))
+          }
         />
       </Elasticsearch>
     );
