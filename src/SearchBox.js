@@ -50,6 +50,9 @@ export default function({ customQuery, fields, id, initialValue, placeholder }) 
     return !widgets.get(id) || widgets.get(id).value == value;
   }
 
+  // Destroy widget from context (remove from the list to unapply its effects)
+  useEffect(() => () => dispatch({ type: "deleteWidget", key: id }), []);
+
   return (
     <div className="react-es-searchbox">
       <input

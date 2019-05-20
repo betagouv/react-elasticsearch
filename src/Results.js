@@ -34,6 +34,9 @@ export default function({ itemsPerPage, initialPage = 1, pagination, stats, item
     });
   }, [page, sort]);
 
+  // Destroy widget from context (remove from the list to unapply its effects)
+  useEffect(() => () => dispatch({ type: "deleteWidget", key: id }), []);
+
   const defaultPagination = () => (
     <Pagination onChange={p => setPage(p)} total={total} itemsPerPage={itemsPerPage} page={page} />
   );
