@@ -101,7 +101,24 @@ export default function({ children, onChange }) {
               }
               msearchData.push({
                 query: aggsFromFields(),
-                data: result => result.aggregations[fields[0]].buckets,
+                data: result => {
+                  // Merge aggs (if there is more than one for a facet),
+                  // then remove duplicate and add doc_count (sum),
+                  // then sort and slice to get only 10 first.
+                  const map = new Map();
+                  fields
+                    .map(f => result.aggregations[f].buckets)
+                    .reduce((a, b) => a.concat(b))
+                    .forEach(i => {
+                      map.set(i.key, {
+                        key: i.key,
+                        doc_count: map.has(i.key)
+                          ? i.doc_count + map.get(i.key).doc_count
+                          : i.doc_count
+                      });
+                    });
+                  return [...map.values()].sort((x, y) => y.doc_count - x.doc_count).slice(0, size);
+                },
                 total: result => result.hits.total,
                 id: id
               });
