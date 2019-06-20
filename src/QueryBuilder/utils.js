@@ -23,7 +23,7 @@ export const defaultOperators = [
     value: "!=",
     text: "not equals",
     useInput: true,
-    query: (key, value) => (value ? { bool: {must_not: { term: { [key]: value } } }} : null)
+    query: (key, value) => (value ? { bool: { must_not: { term: { [key]: value } } } } : null)
   },
   {
     value: ">=",
@@ -100,3 +100,14 @@ export const defaultOperators = [
 ];
 
 export const defaultCombinators = [{ value: "AND", text: "AND" }, { value: "OR", text: "OR" }];
+
+export function uuidv4() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+export function withUniqueKey(rules) {
+  return rules.map(r => ({ ...r, key: uuidv4() }));
+}

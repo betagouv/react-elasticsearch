@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSharedContext } from "../SharedContextProvider";
-import { defaultOperators, defaultCombinators, mergedQueries } from "./utils";
+import { defaultOperators, defaultCombinators, mergedQueries, uuidv4, withUniqueKey } from "./utils";
 import Rule from "./Rule";
 
 export default function QueryBuilder({
@@ -22,7 +22,7 @@ export default function QueryBuilder({
     combinator: "AND",
     index: 0
   };
-  const [rules, setRules] = useState(initialValue || [templateRule]);
+  const [rules, setRules] = useState(withUniqueKey(initialValue || [templateRule]));
 
   useEffect(() => {
     const queries = mergedQueries(
@@ -39,7 +39,13 @@ export default function QueryBuilder({
       isFacet: false,
       wantResults: false,
       query: { bool: queries },
-      value: rules,
+      value: rules.map(r => ({
+        field: r.field,
+        operator: r.operator,
+        value: r.value,
+        combinator: r.combinator,
+        index: r.index
+      })),
       configuration: null,
       result: null
     });
@@ -59,18 +65,22 @@ export default function QueryBuilder({
           fields={fields}
           operators={operators}
           combinators={combinators}
-          key={rule.index}
+          key={rule.key}
           index={rule.index}
           autoComplete={autoComplete}
           onAdd={() => {
-            setRules([...rules, { ...templateRule, index: rules.length }]);
+            setRules([...rules, { ...templateRule, index: rules.length, key: uuidv4() }]);
           }}
           onDelete={index => {
-            delete rules[index];
-            setRules(rules.filter(e => e).map((v, k) => ({ ...v, index: k })));
+            setRules(
+              rules
+                .filter(e => e.index !== index)
+                .filter(e => e)
+                .map((v, k) => ({ ...v, index: k }))
+            );
           }}
           onChange={r => {
-            rules[r.index] = r;
+            rules[r.index] = { ...r, key: rules[r.index].key };
             setRules([...rules]);
           }}
         />
