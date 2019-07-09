@@ -113,7 +113,7 @@ function WithUrlParams() {
       <QueryBuilder
         initialValue={initialValues.get("qb")}
         id="qb"
-        fields={[{ value: "AUTR.keyword", text: "Author" }]}
+        fields={[{ value: "x", text: "Should not be selected" }, { value: "AUTR.keyword", text: "Author" }]}
       />
       <Results
         id="result"
