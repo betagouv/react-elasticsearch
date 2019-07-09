@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSharedContext } from "../SharedContextProvider";
-import { defaultOperators, defaultCombinators, mergedQueries, uuidv4, withUniqueKey } from "./utils";
+import {
+  defaultOperators,
+  defaultCombinators,
+  mergedQueries,
+  uuidv4,
+  withUniqueKey
+} from "./utils";
 import Rule from "./Rule";
 
 export default function QueryBuilder({
