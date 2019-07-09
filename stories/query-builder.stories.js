@@ -74,7 +74,10 @@ storiesOf("QueryBuilder", module)
       <Elasticsearch url={url}>
         <QueryBuilder
           id="qb"
-          fields={[{ value: ["AUTR.keyword", "TICO.keyword"], text: "Author + TICO" }]}
+          fields={[
+            { value: "AUTR.keyword", text: "Author" },
+            { value: ["AUTR.keyword", "TICO.keyword"], text: "Author + TICO" }
+          ]}
           autoComplete={true}
         />
         <Results

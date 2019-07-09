@@ -81,12 +81,12 @@ export default function Rule({ fields, operators, combinators, ...props }) {
       {combinatorElement}
       <select
         className="react-es-rule-field"
-        value={Array.isArray(field) ? field.join() : field}
-        onChange={e => setField(e.target.value)}
+        value={fields.indexOf(field)}
+        onChange={e => setField(fields[e.target.value].value)}
       >
-        {fields.map(f => {
+        {fields.map((f, k) => {
           return (
-            <option key={f.value} value={f.value}>
+            <option key={k} value={k}>
               {f.text}
             </option>
           );
