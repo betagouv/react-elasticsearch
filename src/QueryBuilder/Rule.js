@@ -81,7 +81,7 @@ export default function Rule({ fields, operators, combinators, ...props }) {
       {combinatorElement}
       <select
         className="react-es-rule-field"
-        value={fields.findIndex(e => e.value === field)}
+        value={fields.findIndex(e => String(e.value) === String(field))}
         onChange={e => setField(fields[e.target.value].value)}
       >
         {fields.map((f, k) => {
