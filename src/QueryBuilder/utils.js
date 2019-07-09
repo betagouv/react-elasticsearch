@@ -12,90 +12,106 @@ export function mergedQueries(queries) {
   return obj;
 }
 
+function query(key, value, cb, shouldOrMust = "should") {
+  if (Array.isArray(key)) {
+    return { bool: { [shouldOrMust]: key.map(k => cb(k, value)) } };
+  }
+  return cb(key, value);
+}
+
 export const defaultOperators = [
   {
     value: "==",
     text: "equals",
     useInput: true,
-    query: (key, value) => (value ? { term: { [key]: value } } : null)
+    query: (key, value) => value && query(key, value, (k, v) => ({ term: { [k]: v } }))
   },
   {
     value: "!=",
     text: "not equals",
     useInput: true,
-    query: (key, value) => (value ? { bool: { must_not: { term: { [key]: value } } } } : null)
+    query: (key, value) =>
+      value && query(key, value, (k, v) => ({ bool: { must_not: { term: { [k]: v } } } }), "must")
   },
   {
     value: ">=",
     text: "greater than or equals to",
     useInput: true,
-    query: (key, value) => (value ? { range: { [key]: { gte: value } } } : null)
+    query: (key, value) => value && query(key, value, (k, v) => ({ range: { [k]: { gte: v } } }))
   },
   {
     value: "<=",
     text: "lesser than or equals to",
     useInput: true,
-    query: (key, value) => (value ? { range: { [key]: { lte: value } } } : null)
+    query: (key, value) => value && query(key, value, (k, v) => ({ range: { [k]: { lte: v } } }))
   },
   {
     value: ">",
     text: "greater than",
     useInput: true,
-    query: (key, value) => (value ? { range: { [key]: { lt: value } } } : null)
+    query: (key, value) => value && query(key, value, (k, v) => ({ range: { [k]: { gt: v } } }))
   },
   {
     value: "<",
     text: "lesser than",
     useInput: true,
-    query: (key, value) => (value ? { range: { [key]: { gt: value } } } : null)
+    query: (key, value) => value && query(key, value, (k, v) => ({ range: { [k]: { lt: v } } }))
   },
   {
     value: "∃",
     text: "exists",
     useInput: false,
-    query: key => ({
-      bool: {
-        // Must exists ...
-        must: { exists: { field: key } },
-        // ... and must be not empty.
-        must_not: { term: { [key]: "" } }
-      }
-    })
+    query: key =>
+      query(key, null, k => ({
+        bool: {
+          // Must exists ...
+          must: { exists: { field: k } },
+          // ... and must be not empty.
+          must_not: { term: { [k]: "" } }
+        }
+      }))
   },
   {
     value: "!∃",
     text: "does not exist",
     useInput: false,
-    query: key => ({
-      bool: {
-        // Should be ...
-        should: [
-          // ... empty string ...
-          { term: { [key]: "" } },
-          // ... or not exists.
-          { bool: { must_not: { exists: { field: key } } } }
-        ]
-      }
-    })
+    query: key =>
+      query(
+        key,
+        null,
+        k => ({
+          bool: {
+            // Should be ...
+            should: [
+              // ... empty string ...
+              { term: { [k]: "" } },
+              // ... or not exists.
+              { bool: { must_not: { exists: { field: k } } } }
+            ]
+          }
+        }),
+        "must"
+      )
   },
   {
     value: "*",
     text: "contains",
     useInput: true,
-    query: (key, value) => (value ? { wildcard: { [key]: `*${value}*` } } : null)
+    query: (key, value) => value && query(key, value, (k, v) => ({ wildcard: { [k]: `*${v}*` } }))
   },
   {
     value: "!*",
     text: "does not contains",
     useInput: true,
     query: (key, value) =>
-      value ? { bool: { must_not: { wildcard: { [key]: `*${value}*` } } } } : null
+      value &&
+      query(key, value, (k, v) => ({ bool: { must_not: { wildcard: { [k]: `*${v}*` } } } }), "must")
   },
   {
     value: "^",
     text: "start with",
     useInput: true,
-    query: (key, value) => (value ? { wildcard: { [key]: `${value}*` } } : null)
+    query: (key, value) => value && query(key, value, (k, v) => ({ wildcard: { [k]: `${v}*` } }))
   }
 ];
 

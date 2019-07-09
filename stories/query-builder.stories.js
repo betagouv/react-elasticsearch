@@ -8,7 +8,10 @@ storiesOf("QueryBuilder", module)
     return (
       <Elasticsearch url={url}>
         <QueryBuilder id="qb" fields={[{ value: "AUTR.keyword", text: "Author" }]} />
-        <Results id="result" items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)} />
+        <Results
+          id="result"
+          items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+        />
       </Elasticsearch>
     );
   })
@@ -20,7 +23,10 @@ storiesOf("QueryBuilder", module)
           fields={[{ value: "AUTR.keyword", text: "Author" }]}
           autoComplete={true}
         />
-        <Results id="result" items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)} />
+        <Results
+          id="result"
+          items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+        />
       </Elasticsearch>
     );
   })
@@ -56,7 +62,31 @@ storiesOf("QueryBuilder", module)
           autoComplete={true}
           operators={operators}
         />
-        <Results id="result" items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)} />
+        <Results
+          id="result"
+          items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+        />
+      </Elasticsearch>
+    );
+  })
+  .add("multiple fields", () => {
+    return (
+      <Elasticsearch url={url}>
+        <QueryBuilder
+          id="qb"
+          fields={[{ value: ["AUTR.keyword", "TICO.keyword"], text: "Author + TICO" }]}
+          autoComplete={true}
+        />
+        <Results
+          id="result"
+          items={data =>
+            data.map(({ _source, _id }) => (
+              <div key={_id}>
+                {_source.AUTR} - {_source.TICO}
+              </div>
+            ))
+          }
+        />
       </Elasticsearch>
     );
   })
@@ -82,7 +112,10 @@ function WithUrlParams() {
         id="qb"
         fields={[{ value: "AUTR.keyword", text: "Author" }]}
       />
-      <Results id="result" items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)} />
+      <Results
+        id="result"
+        items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+      />
     </Elasticsearch>
   );
 }

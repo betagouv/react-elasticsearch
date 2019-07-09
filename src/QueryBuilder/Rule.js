@@ -38,7 +38,7 @@ export default function Rule({ fields, operators, combinators, ...props }) {
   let input = null;
   if (operators.find(o => o.value === operator && o.useInput)) {
     // Autocomplete zone.
-    if (props.autoComplete) {
+    if (props.autoComplete && !Array.isArray(field)) {
       input = (
         <Autosuggest
           suggestions={suggestions}
@@ -81,7 +81,7 @@ export default function Rule({ fields, operators, combinators, ...props }) {
       {combinatorElement}
       <select
         className="react-es-rule-field"
-        value={field}
+        value={Array.isArray(field) ? field.join() : field}
         onChange={e => setField(e.target.value)}
       >
         {fields.map(f => {
