@@ -18,20 +18,20 @@
     ">0.03%"
   ],
   "devDependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
-    "@storybook/addon-actions": "^5.0.10",
-    "@storybook/addon-links": "^5.0.10",
-    "@storybook/addons": "^5.0.10",
-    "@storybook/react": "^5.0.10",
-    "babel-loader": "^8.0.5",
-    "core-js": "^3.0.1",
+    "@storybook/addon-actions": "^5.1.9",
+    "@storybook/addon-links": "^5.1.9",
+    "@storybook/addons": "^5.1.9",
+    "@storybook/react": "^5.1.9",
+    "babel-loader": "^8.0.6",
+    "core-js": "^3.1.4",
     "qs": "^6.7.0",
     "react-autosuggest": "^9.4.3",
     "unfetch": "^4.1.0",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.0"
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5"
   },
   "peerDependencies": {
     "react": "^16.8.6",
