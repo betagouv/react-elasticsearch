@@ -44,7 +44,7 @@ export default function({ itemsPerPage, initialPage = 1, pagination, stats, item
   return (
     <div className="react-es-results">
       {stats ? stats(total) : <>{total} results</>}
-      {items(data)}
+      <div className="react-es-results-items">{items(data)}</div>
       {pagination ? pagination(total, itemsPerPage, page, setPage) : defaultPagination()}
     </div>
   );
