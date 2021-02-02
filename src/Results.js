@@ -10,7 +10,7 @@ export default function({ itemsPerPage, initialPage = 1, pagination, stats, item
   const [page, setPage] = useState(initialPage);
   const widget = widgets.get(id);
   const data = widget && widget.result && widget.result.data ? widget.result.data : [];
-  const total = widget && widget.result && widget.result.total ? widget.result.total : 0;
+  const total = widget && widget.result && widget.result.total ? (widget.result.total.hasOwnProperty('value') ? widget.result.total.value: widget.result.total) : 0;
   itemsPerPage = itemsPerPage || 10;
 
   useEffect(() => {
