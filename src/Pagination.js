@@ -8,7 +8,7 @@ import React from "react";
 //
 // X and Y are used to simulate "..." with different keys. Just like my code in 1997.
 function buttons(page, max) {
-  if (page < 5) {
+  if (page < 5 || page > max) {
     return [...[...Array(Math.min(max, 5)).keys()].map(e => e + 1), ...(max > 6 ? ["x", max] : [])];
   } else if (page >= 5 && page <= max - 4) {
     return [1, "x", page - 2, page - 1, page, page + 1, page + 2, "y", max];
