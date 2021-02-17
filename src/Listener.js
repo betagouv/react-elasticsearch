@@ -69,6 +69,7 @@ export default function({ children, onChange }) {
             // Fetch data for internal facet components.
             facetWidgets.forEach((f, id) => {
               const fields = f.configuration.fields;
+              const nestedPath = f.configuration.nestedPath;
               const size = f.configuration.size;
               const filterValue = f.configuration.filterValue;
               const filterValueModifier = f.configuration.filterValueModifier;
@@ -97,6 +98,11 @@ export default function({ children, onChange }) {
                 fields.forEach(f => {
                   result = { ...result, ...aggFromField(f) };
                 });
+                
+                if (nestedPath) {
+                  result = {[fields[0]]: {nested: { path: nestedPath} , aggs: result}};
+                }
+
                 return { query: queryFrom(withoutOwnQueries()), size: 0, aggs: result };
               }
               msearchData.push({
@@ -107,7 +113,7 @@ export default function({ children, onChange }) {
                   // then sort and slice to get only 10 first.
                   const map = new Map();
                   fields
-                    .map(f => result.aggregations[f].buckets)
+                    .map(f => nestedPath ? result.aggregations[f][f].buckets : result.aggregations[f].buckets)
                     .reduce((a, b) => a.concat(b))
                     .forEach(i => {
                       map.set(i.key, {

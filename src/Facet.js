@@ -4,6 +4,7 @@ import { useSharedContext } from "./SharedContextProvider";
 
 export default function({
   fields,
+  nestedPath = false,
   id,
   initialValue,
   seeMore,
@@ -27,6 +28,9 @@ export default function({
 
   // Update widgets properties on state change.
   useEffect(() => {
+    let toTerm = toTermQueries(fields, value);
+    let query = { bool: { should: toTerm} };
+
     dispatch({
       type: "setWidget",
       key: id,
@@ -34,9 +38,9 @@ export default function({
       needsConfiguration: true,
       isFacet: true,
       wantResults: false,
-      query: { bool: { should: toTermQueries(fields, value) } },
+      query: nestedPath && toTerm.length ? {nested: {path: nestedPath, query: query}} : query,
       value,
-      configuration: { size, filterValue, fields, filterValueModifier },
+      configuration: { size, filterValue, fields, nestedPath, filterValueModifier },
       result: data && total ? { data, total } : null
     });
   }, [size, filterValue, value]);
