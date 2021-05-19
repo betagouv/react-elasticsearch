@@ -4,9 +4,9 @@
 [![Downloads](https://img.shields.io/npm/dt/react-elasticsearch.svg)](https://npmjs.org/package/react-elasticsearch)
 [![License](https://img.shields.io/npm/l/react-elasticsearch.svg)](https://github.com/rap2hpoutre/react-elasticsearch/blob/master/package.json)
 
-## Introduction
-
-UI components for React + Elasticsearch. Create search applications using declarative components, documentation [available here](https://react-elasticsearch.raph.site/).
+UI components for React + Elasticsearch. Create search applications using declarative components.
+## Usage
+**👉 [Documentation and playable demo available here](https://react-elasticsearch.raph.site/).**
 
 ```jsx
 const MySearchComponent = () => (
