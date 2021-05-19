@@ -3,7 +3,7 @@ import { useSharedContext } from "./SharedContextProvider";
 import { msearch, queryFrom, defer } from "./utils";
 
 // This component needs to be cleaned.
-export default function({ children, onChange }) {
+export default function ({ children, onChange }) {
   const [{ url, listenerEffect, widgets, headers }, dispatch] = useSharedContext();
 
   // We need to prepare some data in each render.
@@ -43,7 +43,8 @@ export default function({ children, onChange }) {
     // the whole list of components that are configurables and queryable.
     const queriesReady = queries.size === searchWidgets.size;
     const configurationsReady = configurations.size === configurableWidgets.size;
-    if (queriesReady && configurationsReady) {
+    const isAtLeastOneWidgetReady = searchWidgets.size + configurableWidgets.size > 0;
+    if (queriesReady && configurationsReady && isAtLeastOneWidgetReady) {
       // The actual query to ES is deffered, to wait for all effects
       // and context operations before running.
       defer(() => {
@@ -58,11 +59,11 @@ export default function({ children, onChange }) {
                   query: queryFrom(queries),
                   size: itemsPerPage,
                   from: (page - 1) * itemsPerPage,
-                  sort
+                  sort,
                 },
-                data: result => result.hits.hits,
-                total: result => result.hits.total,
-                id
+                data: (result) => result.hits.hits,
+                total: (result) => result.hits.total,
+                id,
               });
             });
 
@@ -94,33 +95,33 @@ export default function({ children, onChange }) {
                 }
                 // Actually build the query from fields
                 let result = {};
-                fields.forEach(f => {
+                fields.forEach((f) => {
                   result = { ...result, ...aggFromField(f) };
                 });
                 return { query: queryFrom(withoutOwnQueries()), size: 0, aggs: result };
               }
               msearchData.push({
                 query: aggsFromFields(),
-                data: result => {
+                data: (result) => {
                   // Merge aggs (if there is more than one for a facet),
                   // then remove duplicate and add doc_count (sum),
                   // then sort and slice to get only 10 first.
                   const map = new Map();
                   fields
-                    .map(f => result.aggregations[f].buckets)
+                    .map((f) => result.aggregations[f].buckets)
                     .reduce((a, b) => a.concat(b))
-                    .forEach(i => {
+                    .forEach((i) => {
                       map.set(i.key, {
                         key: i.key,
                         doc_count: map.has(i.key)
                           ? i.doc_count + map.get(i.key).doc_count
-                          : i.doc_count
+                          : i.doc_count,
                       });
                     });
                   return [...map.values()].sort((x, y) => y.doc_count - x.doc_count).slice(0, size);
                 },
-                total: result => result.hits.total,
-                id: id
+                total: (result) => result.hits.total,
+                id: id,
               });
             });
 
@@ -137,7 +138,7 @@ export default function({ children, onChange }) {
                   }
                   widget.result = {
                     data: msearchData[key].data(response),
-                    total: msearchData[key].total(response)
+                    total: msearchData[key].total(response),
                   };
                   // Update widget
                   dispatch({ type: "setWidget", key: msearchData[key].id, ...widget });
@@ -147,7 +148,7 @@ export default function({ children, onChange }) {
             fetchData();
             // Destroy the effect listener to avoid infinite loop!
             dispatch({ type: "setListenerEffect", value: null });
-          }
+          },
         });
       });
     }
