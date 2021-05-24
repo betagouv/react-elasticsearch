@@ -11,7 +11,7 @@ UI components for React + Elasticsearch. Create search applications using declar
 ```jsx
 const MySearchComponent = () => (
   <Elasticsearch url="http://example.org/search">
-    <SearchBox id="mainSearch" />
+    <SearchBox id="mainSearch" fields={["title"]} />
     <Facet id="actors" fields={["actors"]} />
     <Facet id="releasedYear" fields={["releasedYear"]} />
     <Results
