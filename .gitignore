@@ -3,7 +3,6 @@
 /.example
 
 # production
-dist/main.js
 /example/build
 
 # misc
