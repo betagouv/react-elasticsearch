@@ -10,14 +10,13 @@ export default function ({
     placeholder,
     showFilter = true,
     filterValueModifier,
-    itemsPerBlock,
     items
 }) {
     const [{ widgets }, dispatch] = useSharedContext();
     // Current filter (search inside facet value).
     const [filterValue, setFilterValue] = useState("");
     // Number of itemns displayed in facet.
-    const [size, setSize] = useState(itemsPerBlock || 5);
+    const [size, setSize] = useState(1);
     // The actual selected items in facet.
     const [value, setValue] = useState(initialValue || []);
     // Data from internal queries (Elasticsearch queries are performed via Listener)
