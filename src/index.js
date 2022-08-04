@@ -7,7 +7,7 @@ import Listener from "./Listener";
 import ActiveFilters from "./ActiveFilters";
 import QueryBuilder from "./QueryBuilder/QueryBuilder";
 import CustomWidget from "./CustomWidget";
-import GeoFacet from "./GeoFacet";
+import GeoFilter from "./GeoFilter";
 import { fromUrlQueryString, toUrlQueryString, msearch } from "./utils";
 
 export {
@@ -23,5 +23,5 @@ export {
   QueryBuilder,
   CustomWidget,
   msearch,
-  GeoFacet
+  GeoFilter
 };
